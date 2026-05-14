@@ -1,0 +1,52 @@
+# Auto-detect text files and normalize line endings to LF
+* text=auto eol=lf
+
+# Source code
+*.swift     text diff=swift
+*.h         text
+*.m         text
+*.mm        text
+*.c         text
+*.cpp       text
+*.metal     text
+
+# Scripts
+*.sh        text eol=lf
+*.py        text eol=lf
+*.rb        text eol=lf
+
+# Config / docs
+*.json      text
+*.yml       text
+*.yaml      text
+*.toml      text
+*.md        text
+*.txt       text
+*.plist     text
+*.xcconfig  text
+*.entitlements text
+
+# Xcode project files (merge-friendly settings)
+*.pbxproj           text -merge=union
+*.xcscheme          text
+*.xcsettings        text
+*.storyboard        text
+*.xib               text
+
+# Binary assets
+*.png       binary
+*.jpg       binary
+*.jpeg      binary
+*.gif       binary
+*.ico       binary
+*.icns      binary
+*.pdf       binary
+*.zip       binary
+*.tar.gz    binary
+*.gguf      binary
+*.bin       binary
+*.mlmodel   binary
+*.mlmodelc  binary
+
+# Linguist overrides (GitHub language stats)
+*.pbxproj   linguist-generated
