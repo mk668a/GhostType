@@ -1,6 +1,8 @@
 <p align="center">
-  <img src="docs/icon.png" alt="GhostType" width="128" height="128">
+  <img src="images/header.png" alt="GhostType" width="600">
 </p>
+
+> 🇯🇵 [日本語版 README はこちら](docs/i18n/README.ja.md)
 
 # GhostType
 
@@ -22,6 +24,22 @@ GhostType brings GitHub Copilot-style ghost text completions to **every app on m
 - **100% local** -- All inference runs on-device. No data ever leaves your Mac
 - **Works with any OpenAI-compatible server** -- LM Studio, Ollama, llama.cpp, vLLM, etc.
 - **Low latency** -- Optimized for fast response on Apple Silicon
+
+## In Action
+
+Ghost text completions appear right where you type — in any app.
+
+<p align="center">
+  <img src="images/usecase1.png" alt="GhostType in Gmail" width="600">
+  <br>
+  <em>Drafting a reply in Gmail</em>
+</p>
+
+<p align="center">
+  <img src="images/usecase2.png" alt="GhostType on X" width="600">
+  <br>
+  <em>Composing a post on X</em>
+</p>
 
 ## Install
 
