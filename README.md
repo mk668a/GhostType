@@ -45,7 +45,7 @@ Ghost text completions appear right where you type — in any app.
 
 ### Download
 
-Download the latest **GhostType-x.x.x.dmg** from the [Releases](https://github.com/YOUR_USERNAME/GhostType/releases) page.
+Download the latest **GhostType-x.x.x.dmg** from the [Releases](https://github.com/mk668a/GhostType/releases) page.
 
 ### Install
 
@@ -206,7 +206,7 @@ GhostType works with most macOS apps. Some notes:
 ## Build from Source
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/GhostType.git
+git clone https://github.com/mk668a/GhostType.git
 cd GhostType
 
 # Build DMG installer

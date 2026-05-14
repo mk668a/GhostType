@@ -45,7 +45,7 @@ GhostType は GitHub Copilot 風のゴーストテキスト補完を **macOS の
 
 ### ダウンロード
 
-[Releases](https://github.com/YOUR_USERNAME/GhostType/releases) ページから最新の **GhostType-x.x.x.dmg** をダウンロードしてください。
+[Releases](https://github.com/mk668a/GhostType/releases) ページから最新の **GhostType-x.x.x.dmg** をダウンロードしてください。
 
 ### インストール手順
 
@@ -206,7 +206,7 @@ GhostType は macOS のほとんどのアプリで動作します。注意点は
 ## ソースからビルド
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/GhostType.git
+git clone https://github.com/mk668a/GhostType.git
 cd GhostType
 
 # DMG インストーラを作成
