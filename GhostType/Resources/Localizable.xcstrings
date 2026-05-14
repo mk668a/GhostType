@@ -1,0 +1,996 @@
+{
+  "sourceLanguage" : "en",
+  "version" : "1.0",
+  "strings" : {
+    "1. Connect to your LLM server" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. LLM サーバーに接続"
+          }
+        }
+      }
+    },
+    "2. Grant permissions" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2. 権限を許可"
+          }
+        }
+      }
+    },
+    "3. Shortcuts" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3. ショートカット"
+          }
+        }
+      }
+    },
+    "Accept" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "受け入れ"
+          }
+        }
+      }
+    },
+    "Accept completion" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "補完を受け入れる"
+          }
+        }
+      }
+    },
+    "Accessibility" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アクセシビリティ"
+          }
+        }
+      }
+    },
+    "Add" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "追加"
+          }
+        }
+      }
+    },
+    "Add App..." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリを追加..."
+          }
+        }
+      }
+    },
+    "Advanced, high throughput" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "高度、高スループット"
+          }
+        }
+      }
+    },
+    "All set. GhostType is ready to use in any app." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定完了。すべてのアプリで GhostType をお使いいただけます。"
+          }
+        }
+      }
+    },
+    "Appearance" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "外観"
+          }
+        }
+      }
+    },
+    "Auto-trigger completions" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "補完を自動トリガー"
+          }
+        }
+      }
+    },
+    "Auto-trigger pauses while a non-ASCII IME (Japanese, Chinese, Korean, …) is active so it never fights your composition. Switch back to ABC / English to resume." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "非 ASCII の IME（日本語・中国語・韓国語など）が有効な間は自動トリガーが停止し、変換と競合しません。ABC / 英字入力に戻すと再開します。"
+          }
+        }
+      }
+    },
+    "Cancel" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キャンセル"
+          }
+        }
+      }
+    },
+    "Changing the language requires relaunching GhostType to take effect." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "言語の変更を反映するには GhostType を再起動する必要があります。"
+          }
+        }
+      }
+    },
+    "Cannot connect. Is the server running?" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接続できません。サーバーは起動していますか?"
+          }
+        }
+      }
+    },
+    "CLI, ollama serve" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CLI、ollama serve"
+          }
+        }
+      }
+    },
+    "Code & technical docs" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コード・技術文書向け"
+          }
+        }
+      }
+    },
+    "Compatible Apps" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "対応アプリ"
+          }
+        }
+      }
+    },
+    "Connected" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接続済み"
+          }
+        }
+      }
+    },
+    "Connecting..." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接続中..."
+          }
+        }
+      }
+    },
+    "Context" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コンテキスト"
+          }
+        }
+      }
+    },
+    "Context Window (chars)" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コンテキストウィンドウ (文字数)"
+          }
+        }
+      }
+    },
+    "Debounce delay" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デバウンス遅延"
+          }
+        }
+      }
+    },
+    "Disable" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無効化"
+          }
+        }
+      }
+    },
+    "Disable GhostType" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GhostType を無効化"
+          }
+        }
+      }
+    },
+    "Dismiss" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "閉じる"
+          }
+        }
+      }
+    },
+    "Dismiss completion" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "補完を閉じる"
+          }
+        }
+      }
+    },
+    "Done" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完了"
+          }
+        }
+      }
+    },
+    "Enable GhostType" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GhostType を有効化"
+          }
+        }
+      }
+    },
+    "Endpoint" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エンドポイント"
+          }
+        }
+      }
+    },
+    "Error" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エラー"
+          }
+        }
+      }
+    },
+    "Excluded Apps" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "除外アプリ"
+          }
+        }
+      }
+    },
+    "Excluded Applications" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "除外アプリケーション"
+          }
+        }
+      }
+    },
+    "FIM-specialized, high quality" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FIM 特化、高品質"
+          }
+        }
+      }
+    },
+    "Follow these steps to get GhostType running across all your apps." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以下の手順に従い、すべてのアプリで GhostType を有効にしてください。"
+          }
+        }
+      }
+    },
+    "Font Size" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォントサイズ"
+          }
+        }
+      }
+    },
+    "General" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一般"
+          }
+        }
+      }
+    },
+    "Generation" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "生成"
+          }
+        }
+      }
+    },
+    "Ghost Text" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ゴーストテキスト"
+          }
+        }
+      }
+    },
+    "GhostType connects to an OpenAI-compatible API server.\nStart your LLM in LM Studio, Ollama, or any compatible app before using." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GhostType は OpenAI 互換 API サーバーに接続します。\n使用前に LM Studio、Ollama などの対応アプリで LLM を起動してください。"
+          }
+        }
+      }
+    },
+    "GhostType Settings" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GhostType 設定"
+          }
+        }
+      }
+    },
+    "GhostType will not activate at all in these apps. IDEs and terminals are excluded by default (they have their own completions)." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これらのアプリでは GhostType は一切動作しません。IDE やターミナルは独自の補完を持つため、既定で除外されています。"
+          }
+        }
+      }
+    },
+    "Grant both permissions above to enable system-wide completions." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "システム全体で補完を有効にするには、上記の両方の権限を許可してください。"
+          }
+        }
+      }
+    },
+    "Granted" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "許可済み"
+          }
+        }
+      }
+    },
+    "GUI, easy model management" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GUI、簡単なモデル管理"
+          }
+        }
+      }
+    },
+    "In these apps, auto-trigger is disabled. Use the manual trigger shortcut (%@) to request completions." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これらのアプリでは自動トリガーが無効です。手動トリガーのショートカット (%@) で補完を呼び出してください。"
+          }
+        }
+      }
+    },
+    "Inference" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "推論"
+          }
+        }
+      }
+    },
+    "Input Monitoring" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "入力監視"
+          }
+        }
+      }
+    },
+    "Invalid URL" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無効な URL"
+          }
+        }
+      }
+    },
+    "Keyboard Shortcuts" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キーボードショートカット"
+          }
+        }
+      }
+    },
+    "Language" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "言語"
+          }
+        }
+      }
+    },
+    "LLM Server" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LLM サーバー"
+          }
+        }
+      }
+    },
+    "Manual trigger" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "手動トリガー"
+          }
+        }
+      }
+    },
+    "Manual Trigger Only" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "手動トリガーのみ"
+          }
+        }
+      }
+    },
+    "Max Tokens" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最大トークン数"
+          }
+        }
+      }
+    },
+    "Model" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "モデル"
+          }
+        }
+      }
+    },
+    "Model (optional, auto-detect if blank)" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "モデル (任意、空欄なら自動検出)"
+          }
+        }
+      }
+    },
+    "Model Name (optional, auto-detected if blank)" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "モデル名 (任意、空欄なら自動検出)"
+          }
+        }
+      }
+    },
+    "ms" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ms"
+          }
+        }
+      }
+    },
+    "Next" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "次へ"
+          }
+        }
+      }
+    },
+    "No apps added" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "追加されたアプリはありません"
+          }
+        }
+      }
+    },
+    "Observes your typing system-wide via CGEventTap." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CGEventTap でシステム全体のキー入力を監視します。"
+          }
+        }
+      }
+    },
+    "Opacity" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不透明度"
+          }
+        }
+      }
+    },
+    "Open System Settings" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "システム設定を開く"
+          }
+        }
+      }
+    },
+    "Press a key..." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キーを押してください..."
+          }
+        }
+      }
+    },
+    "Press Tab to accept" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tab で受け入れ"
+          }
+        }
+      }
+    },
+    "Quit GhostType" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GhostType を終了"
+          }
+        }
+      }
+    },
+    "Ready" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "準備完了"
+          }
+        }
+      }
+    },
+    "Reads surrounding text and inserts accepted completions." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "周辺テキストの読み取りと、受け入れた補完の挿入に使用します。"
+          }
+        }
+      }
+    },
+    "Record" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "記録"
+          }
+        }
+      }
+    },
+    "Relaunch" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再起動"
+          }
+        }
+      }
+    },
+    "Recommended Models (FIM-capable)" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "推奨モデル (FIM 対応)"
+          }
+        }
+      }
+    },
+    "Remove %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ を削除"
+          }
+        }
+      }
+    },
+    "Required" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "必要"
+          }
+        }
+      }
+    },
+    "Reset to Defaults" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "既定値にリセット"
+          }
+        }
+      }
+    },
+    "Search apps..." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリを検索..."
+          }
+        }
+      }
+    },
+    "Select Application" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリケーションを選択"
+          }
+        }
+      }
+    },
+    "Server: %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サーバー: %@"
+          }
+        }
+      }
+    },
+    "Server Endpoint" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サーバーエンドポイント"
+          }
+        }
+      }
+    },
+    "Server returned an error" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サーバーがエラーを返しました"
+          }
+        }
+      }
+    },
+    "Server returned error" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サーバーがエラーを返しました"
+          }
+        }
+      }
+    },
+    "Settings..." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定..."
+          }
+        }
+      }
+    },
+    "Setup" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "セットアップ"
+          }
+        }
+      }
+    },
+    "Setup Guide..." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "セットアップガイド..."
+          }
+        }
+      }
+    },
+    "Start a local LLM (LM Studio, Ollama, llama.cpp, …) then enter its endpoint here." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ローカル LLM (LM Studio、Ollama、llama.cpp など) を起動し、エンドポイントを入力してください。"
+          }
+        }
+      }
+    },
+    "System Default" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "システム設定に従う"
+          }
+        }
+      }
+    },
+    "Status: %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "状態: %@"
+          }
+        }
+      }
+    },
+    "Temperature" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temperature"
+          }
+        }
+      }
+    },
+    "Test Connection" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接続テスト"
+          }
+        }
+      }
+    },
+    "Thinking..." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "思考中..."
+          }
+        }
+      }
+    },
+    "Toggle GhostType" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GhostType を切り替え"
+          }
+        }
+      }
+    },
+    "Toggle on/off" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オン／オフ切替"
+          }
+        }
+      }
+    },
+    "Top P" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Top P"
+          }
+        }
+      }
+    },
+    "Trigger" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "トリガー"
+          }
+        }
+      }
+    },
+    "Try It" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "試してみる"
+          }
+        }
+      }
+    },
+    "Type below to test completions. Pause typing to trigger, Tab to accept, Esc to dismiss." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下に入力して補完を試せます。タイプを止めるとトリガーされ、Tab で受け入れ、Esc で閉じます。"
+          }
+        }
+      }
+    },
+    "Type here to test completions...\n" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ここに入力して補完をテスト...\n"
+          }
+        }
+      }
+    },
+    "Ultra-lightweight, low latency" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "超軽量、低レイテンシ"
+          }
+        }
+      }
+    }
+  }
+}

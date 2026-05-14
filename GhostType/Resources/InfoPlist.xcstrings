@@ -1,0 +1,23 @@
+{
+  "sourceLanguage" : "en",
+  "version" : "1.0",
+  "strings" : {
+    "NSAccessibilityUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GhostType needs accessibility access to read text fields and provide AI-powered text completions across all applications."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GhostType がすべてのアプリでテキストフィールドを読み取り、AI による補完を提供するためにアクセシビリティ権限が必要です。"
+          }
+        }
+      }
+    }
+  }
+}

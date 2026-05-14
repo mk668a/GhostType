@@ -35,7 +35,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             openSettings(initialTab: .setup)
         }
 
-        settings.statusText = "Ready"
+        settings.statusText = String(localized: "Ready")
         settings.markLaunched()
     }
 
@@ -91,7 +91,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         let menu = NSMenu()
 
         let enableItem = NSMenuItem(
-            title: settings.isEnabled ? "Disable GhostType" : "Enable GhostType",
+            title: settings.isEnabled
+                ? String(localized: "Disable GhostType")
+                : String(localized: "Enable GhostType"),
             action: #selector(toggleEnabled),
             keyEquivalent: ""
         )
@@ -107,14 +109,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
         menu.addItem(.separator())
 
-        let statusMenuItem = NSMenuItem(title: "Status: \(settings.statusText)", action: nil, keyEquivalent: "")
+        let statusTitle = String(localized: "Status: \(settings.statusText)")
+        let statusMenuItem = NSMenuItem(title: statusTitle, action: nil, keyEquivalent: "")
         statusMenuItem.isEnabled = false
         menu.addItem(statusMenuItem)
 
-        let serverItem = NSMenuItem(title: "Server: \(settings.serverEndpoint)", action: nil, keyEquivalent: "")
+        let serverTitle = String(localized: "Server: \(settings.serverEndpoint)")
+        let serverItem = NSMenuItem(title: serverTitle, action: nil, keyEquivalent: "")
         serverItem.isEnabled = false
         serverItem.attributedTitle = NSAttributedString(
-            string: "Server: \(settings.serverEndpoint)",
+            string: serverTitle,
             attributes: [.font: NSFont.monospacedSystemFont(ofSize: 11, weight: .regular),
                          .foregroundColor: NSColor.secondaryLabelColor]
         )
@@ -136,13 +140,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
         menu.addItem(.separator())
 
-        let settingsItem = NSMenuItem(title: "Settings...", action: #selector(openSettingsAction(_:)), keyEquivalent: ",")
+        let settingsItem = NSMenuItem(title: String(localized: "Settings..."), action: #selector(openSettingsAction(_:)), keyEquivalent: ",")
         settingsItem.target = self
         menu.addItem(settingsItem)
 
         menu.addItem(.separator())
 
-        let quitItem = NSMenuItem(title: "Quit GhostType", action: #selector(quitApp), keyEquivalent: "q")
+        let quitItem = NSMenuItem(title: String(localized: "Quit GhostType"), action: #selector(quitApp), keyEquivalent: "q")
         quitItem.target = self
         menu.addItem(quitItem)
 
@@ -170,7 +174,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             let root = SettingsView().environmentObject(settings)
             let controller = NSHostingController(rootView: root)
             let window = NSWindow(contentViewController: controller)
-            window.title = "GhostType Settings"
+            window.title = String(localized: "GhostType Settings")
             window.styleMask = [.titled, .closable, .miniaturizable]
             window.isReleasedWhenClosed = false
             window.delegate = self

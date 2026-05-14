@@ -62,7 +62,7 @@ struct CompletionPopup: View {
 
 struct KeyHint: View {
     let key: String
-    let label: String
+    let label: LocalizedStringKey
 
     var body: some View {
         HStack(spacing: 2) {

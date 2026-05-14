@@ -150,7 +150,7 @@ final class CompletionController {
         let label = bundleID ?? "unknown"
         print("[GhostType] \(isManual ? "Manual" : "Auto") trigger in: \(label)")
 
-        settings.statusText = "Thinking..."
+        settings.statusText = String(localized: "Thinking...")
 
         engine.complete(prefix: context.prefix, suffix: context.suffix) { [weak self] result in
             DispatchQueue.main.async { [weak self] in
@@ -159,16 +159,16 @@ final class CompletionController {
                 case .success(let text):
                     let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
                     guard !trimmed.isEmpty else {
-                        self.settings.statusText = "Ready"
+                        self.settings.statusText = String(localized: "Ready")
                         return
                     }
                     self.show(trimmed, cursorRect: context.cursorRect)
-                    self.settings.statusText = "Ready"
+                    self.settings.statusText = String(localized: "Ready")
                 case .failure(let error):
                     print("[GhostType] Completion error: \(error.localizedDescription)")
-                    self.settings.statusText = "Error"
+                    self.settings.statusText = String(localized: "Error")
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        self.settings.statusText = "Ready"
+                        self.settings.statusText = String(localized: "Ready")
                     }
                 }
             }

@@ -20,6 +20,8 @@
 		A10000012 /* CompletionPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000012 /* CompletionPopup.swift */; };
 		A10000013 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20000013 /* Assets.xcassets */; };
 		A10000015 /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000017 /* MenuBarView.swift */; };
+		A10000030 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = A20000030 /* Localizable.xcstrings */; };
+		A10000031 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = A20000031 /* InfoPlist.xcstrings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +40,8 @@
 		A20000014 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A20000015 /* GhostType.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GhostType.entitlements; sourceTree = "<group>"; };
 		A20000017 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
+		A20000030 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		A20000031 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		A20000099 /* GhostType.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GhostType.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -118,6 +122,8 @@
 			isa = PBXGroup;
 			children = (
 				A20000013 /* Assets.xcassets */,
+				A20000030 /* Localizable.xcstrings */,
+				A20000031 /* InfoPlist.xcstrings */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -190,6 +196,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				A10000013 /* Assets.xcassets in Resources */,
+				A10000030 /* Localizable.xcstrings in Resources */,
+				A10000031 /* InfoPlist.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

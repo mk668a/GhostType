@@ -17,6 +17,31 @@ enum SettingsTab: String, Hashable {
     case setup, general, model, inference, appearance, excluded
 }
 
+// MARK: - Supported UI Languages
+//
+// To add a new language: add a `case` here with its locale code,
+// then add translations for that locale in Localizable.xcstrings
+// (open the catalog in Xcode and click "+" in the language column).
+// `knownRegions` in project.pbxproj is auto-managed by Xcode.
+
+enum AppLanguage: String, CaseIterable, Identifiable {
+    case system = ""
+    case english = "en"
+    case japanese = "ja"
+
+    var id: String { rawValue }
+
+    /// Display name shown in the picker. Native (endonym) form so the user
+    /// can recognize their language even if the UI is currently in another.
+    var displayName: String {
+        switch self {
+        case .system:   return String(localized: "System Default")
+        case .english:  return "English"
+        case .japanese: return "日本語"
+        }
+    }
+}
+
 // MARK: - App Settings
 
 final class AppSettings: ObservableObject {
@@ -58,6 +83,14 @@ final class AppSettings: ObservableObject {
     }
     @Published var fontSize: Double = 13.0 {
         didSet { save() }
+    }
+
+    // UI Language (empty string = follow system)
+    @Published var preferredLanguage: String = "" {
+        didSet {
+            save()
+            applyLanguagePreference()
+        }
     }
 
     // Excluded Apps (auto-trigger disabled completely)
@@ -149,7 +182,7 @@ final class AppSettings: ObservableObject {
     @Published var isEnabled: Bool = true {
         didSet { save() }
     }
-    @Published var statusText: String = "Ready"
+    @Published var statusText: String = String(localized: "Ready")
 
     /// Drives which tab the Settings window opens to. Used by the menu bar's
     /// "Setup Guide..." action and by first-launch.
@@ -168,6 +201,18 @@ final class AppSettings: ObservableObject {
 
     init() {
         load()
+        applyLanguagePreference()
+    }
+
+    /// Writes the chosen UI language to `AppleLanguages` so the next launch
+    /// boots in that locale. macOS reads `AppleLanguages` early in process
+    /// startup, so a relaunch is required to take effect on the running UI.
+    private func applyLanguagePreference() {
+        if preferredLanguage.isEmpty {
+            defaults.removeObject(forKey: "AppleLanguages")
+        } else {
+            defaults.set([preferredLanguage], forKey: "AppleLanguages")
+        }
     }
 
     private func load() {
@@ -181,6 +226,7 @@ final class AppSettings: ObservableObject {
         autoTrigger = defaults.object(forKey: "autoTrigger") as? Bool ?? true
         ghostTextOpacity = defaults.double(forKey: "ghostTextOpacity").nonZeroDouble ?? 0.5
         fontSize = defaults.double(forKey: "fontSize").nonZeroDouble ?? 13.0
+        preferredLanguage = defaults.string(forKey: "preferredLanguage") ?? ""
         if let saved = defaults.stringArray(forKey: "excludedBundleIDs") {
             excludedBundleIDs = saved
         } else {
@@ -214,6 +260,7 @@ final class AppSettings: ObservableObject {
         defaults.set(autoTrigger, forKey: "autoTrigger")
         defaults.set(ghostTextOpacity, forKey: "ghostTextOpacity")
         defaults.set(fontSize, forKey: "fontSize")
+        defaults.set(preferredLanguage, forKey: "preferredLanguage")
         defaults.set(excludedBundleIDs, forKey: "excludedBundleIDs")
         defaults.set(manualOnlyBundleIDs, forKey: "manualOnlyBundleIDs")
         defaults.set(isEnabled, forKey: "isEnabled")

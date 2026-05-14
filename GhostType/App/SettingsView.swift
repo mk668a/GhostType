@@ -37,9 +37,45 @@ struct SettingsView: View {
 
 struct GeneralSettingsView: View {
     @EnvironmentObject var settings: AppSettings
+    @State private var languageDirty = false
+
+    private var languageSelection: Binding<AppLanguage> {
+        Binding(
+            get: { AppLanguage(rawValue: settings.preferredLanguage) ?? .system },
+            set: { newValue in
+                let changed = newValue.rawValue != settings.preferredLanguage
+                settings.preferredLanguage = newValue.rawValue
+                if changed { languageDirty = true }
+            }
+        )
+    }
 
     var body: some View {
         Form {
+            Section("Language") {
+                Picker("Language", selection: languageSelection) {
+                    ForEach(AppLanguage.allCases) { lang in
+                        Text(lang.displayName).tag(lang)
+                    }
+                }
+                .pickerStyle(.menu)
+                .labelsHidden()
+
+                if languageDirty {
+                    HStack(alignment: .top, spacing: 8) {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundColor(.orange)
+                            .font(.caption)
+                        Text("Changing the language requires relaunching GhostType to take effect.")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        Spacer()
+                        Button("Relaunch") { relaunchApp() }
+                            .controlSize(.small)
+                    }
+                }
+            }
+
             Section("Trigger") {
                 Toggle("Auto-trigger completions", isOn: $settings.autoTrigger)
                 HStack {
@@ -77,10 +113,24 @@ struct GeneralSettingsView: View {
         .formStyle(.grouped)
         .padding()
     }
+
+    /// Relaunch the app so a language change can take effect.
+    /// We spawn a detached `open -n` on the bundle and quit ourselves;
+    /// the new process picks up the updated `AppleLanguages` default.
+    private func relaunchApp() {
+        let bundleURL = Bundle.main.bundleURL
+        let task = Process()
+        task.executableURL = URL(fileURLWithPath: "/usr/bin/open")
+        task.arguments = ["-n", bundleURL.path]
+        try? task.run()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            NSApp.terminate(nil)
+        }
+    }
 }
 
 struct KeybindingRecordRow: View {
-    let label: String
+    let label: LocalizedStringKey
     @Binding var binding: KeyBinding
     @State private var isRecording = false
 
@@ -224,7 +274,7 @@ struct ModelSettingsView: View {
         connectionStatus = .checking
         let endpoint = settings.serverEndpoint.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
         guard let url = URL(string: "\(endpoint)/v1/models") else {
-            connectionStatus = .failed("Invalid URL")
+            connectionStatus = .failed(String(localized: "Invalid URL"))
             return
         }
 
@@ -235,7 +285,7 @@ struct ModelSettingsView: View {
             do {
                 let (data, response) = try await URLSession.shared.data(for: request)
                 guard let http = response as? HTTPURLResponse, http.statusCode == 200 else {
-                    await MainActor.run { connectionStatus = .failed("Server returned error") }
+                    await MainActor.run { connectionStatus = .failed(String(localized: "Server returned error")) }
                     return
                 }
                 if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
@@ -251,7 +301,7 @@ struct ModelSettingsView: View {
                     await MainActor.run { connectionStatus = .connected }
                 }
             } catch {
-                await MainActor.run { connectionStatus = .failed("Cannot connect. Is the server running?") }
+                await MainActor.run { connectionStatus = .failed(String(localized: "Cannot connect. Is the server running?")) }
             }
         }
     }
@@ -613,7 +663,7 @@ struct CompletionTestField: NSViewRepresentable {
         textView.isAutomaticDashSubstitutionEnabled = false
         textView.isAutomaticTextReplacementEnabled = false
         textView.allowsUndo = true
-        textView.string = "Type here to test completions...\n"
+        textView.string = String(localized: "Type here to test completions...\n")
         textView.delegate = context.coordinator
         textView.textContainerInset = NSSize(width: 6, height: 6)
 
@@ -864,9 +914,9 @@ struct SetupSettingsView: View {
     }
 
     private func permissionRow(
-        title: String,
+        title: LocalizedStringKey,
         granted: Bool,
-        description: String,
+        description: LocalizedStringKey,
         openAction: @escaping () -> Void
     ) -> some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -894,7 +944,7 @@ struct SetupSettingsView: View {
         }
     }
 
-    private func shortcutRow(action: String, binding: KeyBinding) -> some View {
+    private func shortcutRow(action: LocalizedStringKey, binding: KeyBinding) -> some View {
         HStack {
             Text(action)
             Spacer()
@@ -930,7 +980,7 @@ struct SetupSettingsView: View {
         connectionStatus = .checking
         let endpoint = settings.serverEndpoint.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
         guard let url = URL(string: "\(endpoint)/v1/models") else {
-            connectionStatus = .failed("Invalid URL")
+            connectionStatus = .failed(String(localized: "Invalid URL"))
             return
         }
 
@@ -941,7 +991,7 @@ struct SetupSettingsView: View {
             do {
                 let (data, response) = try await URLSession.shared.data(for: request)
                 guard let http = response as? HTTPURLResponse, http.statusCode == 200 else {
-                    await MainActor.run { connectionStatus = .failed("Server returned an error") }
+                    await MainActor.run { connectionStatus = .failed(String(localized: "Server returned an error")) }
                     return
                 }
                 if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
@@ -956,7 +1006,7 @@ struct SetupSettingsView: View {
                     await MainActor.run { connectionStatus = .connected }
                 }
             } catch {
-                await MainActor.run { connectionStatus = .failed("Cannot connect. Is the server running?") }
+                await MainActor.run { connectionStatus = .failed(String(localized: "Cannot connect. Is the server running?")) }
             }
         }
     }
