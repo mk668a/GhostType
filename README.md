@@ -45,7 +45,7 @@ Ghost text completions appear right where you type — in any app.
 
 ### Download
 
-Download the latest **GhostType-x.x.x.dmg** from the [Releases](https://github.com/mk668a/GhostType/releases) page.
+Download the latest **GhostType-0.1.0.dmg** from the [Releases](https://github.com/mk668a/GhostType/releases) page.
 
 ### Install
 
