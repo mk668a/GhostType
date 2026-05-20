@@ -2,7 +2,7 @@
 set -e
 
 APP_NAME="GhostType"
-VERSION="0.1.0"
+VERSION="0.2.0"
 DMG_NAME="${APP_NAME}-${VERSION}.dmg"
 BUILD_DIR="$(mktemp -d)/build"
 STAGING_DIR="$(mktemp -d)/dmg-staging"
