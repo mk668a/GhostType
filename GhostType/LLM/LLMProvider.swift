@@ -11,17 +11,31 @@ struct FIMRequest {
 
 enum LLMError: LocalizedError {
     case serverNotRunning(String)
+    case timedOut(String)
     case inferenceError(String)
     case networkError(String)
+    /// Auto-trigger short-circuited by the local circuit breaker after repeated failures.
+    /// Surfaced as a non-error: the controller stays silent so the user is not pestered.
+    case suppressed
 
     var errorDescription: String? {
         switch self {
         case .serverNotRunning(let endpoint):
-            return "LLM server is not running at \(endpoint). Start LM Studio, Ollama, or another OpenAI-compatible server."
+            return String(
+                format: String(localized: "LLM server is not running at %@. Start LM Studio, Ollama, or another OpenAI-compatible server."),
+                endpoint
+            )
+        case .timedOut(let endpoint):
+            return String(
+                format: String(localized: "Server at %@ is not responding (model may be loading or the endpoint URL may be wrong)."),
+                endpoint
+            )
         case .inferenceError(let msg):
-            return "Inference error: \(msg)"
+            return String(format: String(localized: "Inference error: %@"), msg)
         case .networkError(let msg):
-            return "Network error: \(msg)"
+            return String(format: String(localized: "Network error: %@"), msg)
+        case .suppressed:
+            return String(localized: "Auto-trigger paused after repeated failures. Use the manual shortcut to retry.")
         }
     }
 }
@@ -31,10 +45,21 @@ enum LLMError: LocalizedError {
 final class LLMClient {
     private let endpoint: String
     private let model: String
+    private let session: URLSession
 
     init(endpoint: String, model: String) {
         self.endpoint = endpoint.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
         self.model = model
+
+        // Dedicated session so timeouts are bounded by the session configuration
+        // (URLSession.shared has a 60s default request timeout and a 7-day resource
+        // timeout, which made stuck endpoints feel like a UI freeze).
+        let config = URLSessionConfiguration.ephemeral
+        config.timeoutIntervalForRequest = 8
+        config.timeoutIntervalForResource = 10
+        config.waitsForConnectivity = false
+        config.httpAdditionalHeaders = ["Content-Type": "application/json"]
+        self.session = URLSession(configuration: config)
     }
 
     func complete(request: FIMRequest) async throws -> String {
@@ -76,14 +101,20 @@ final class LLMClient {
         urlRequest.httpMethod = "POST"
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
         urlRequest.httpBody = try JSONSerialization.data(withJSONObject: body)
-        urlRequest.timeoutInterval = 30
 
         let data: Data
         let response: URLResponse
         do {
-            (data, response) = try await URLSession.shared.data(for: urlRequest)
-        } catch let error as URLError where error.code == .cannotConnectToHost || error.code == .timedOut {
-            throw LLMError.serverNotRunning(endpoint)
+            (data, response) = try await session.data(for: urlRequest)
+        } catch let error as URLError {
+            switch error.code {
+            case .cannotConnectToHost, .cannotFindHost, .dnsLookupFailed, .notConnectedToInternet:
+                throw LLMError.serverNotRunning(endpoint)
+            case .timedOut:
+                throw LLMError.timedOut(endpoint)
+            default:
+                throw LLMError.networkError(error.localizedDescription)
+            }
         } catch {
             throw LLMError.networkError(error.localizedDescription)
         }
@@ -93,8 +124,9 @@ final class LLMClient {
         }
 
         guard httpResponse.statusCode == 200 else {
-            let respBody = String(data: data, encoding: .utf8) ?? ""
-            throw LLMError.inferenceError("Server returned \(httpResponse.statusCode): \(respBody)")
+            let raw = String(data: data, encoding: .utf8) ?? ""
+            let trimmedBody = raw.count > 200 ? String(raw.prefix(200)) + "…" : raw
+            throw LLMError.inferenceError("HTTP \(httpResponse.statusCode): \(trimmedBody)")
         }
 
         guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],

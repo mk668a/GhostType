@@ -64,16 +64,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     private func setupStatusItem() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
 
-        if let button = statusItem.button {
-            if let img = NSImage(systemSymbolName: "text.bubble", accessibilityDescription: "GhostType") {
-                img.isTemplate = true
-                button.image = img
-            } else {
-                button.title = "G"
-            }
-            button.toolTip = "GhostType"
-        }
-
+        updateStatusItemIcon()
         rebuildMenu()
 
         settings.$isEnabled
@@ -85,6 +76,58 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in self?.rebuildMenu() }
             .store(in: &cancellables)
+
+        settings.$connectionState
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.updateStatusItemIcon()
+                self?.rebuildMenu()
+            }
+            .store(in: &cancellables)
+    }
+
+    /// Swap the menu bar SF Symbol so a glance at the icon tells the user
+    /// whether GhostType can reach its LLM endpoint.
+    private func updateStatusItemIcon() {
+        guard let button = statusItem.button else { return }
+        let symbolName: String
+        switch settings.connectionState {
+        case .unreachable, .suppressed:
+            symbolName = "exclamationmark.bubble"
+        case .ok, .unknown:
+            symbolName = "text.bubble"
+        }
+        if let img = NSImage(systemSymbolName: symbolName, accessibilityDescription: "GhostType") {
+            img.isTemplate = true
+            button.image = img
+        } else {
+            button.title = "G"
+        }
+        button.toolTip = "GhostType — \(connectionStateLabel())"
+    }
+
+    private func connectionStateLabel() -> String {
+        switch settings.connectionState {
+        case .unknown:     return String(localized: "Unknown")
+        case .ok:          return String(localized: "Connected")
+        case .suppressed:  return String(localized: "Paused")
+        case .unreachable: return String(localized: "Disconnected")
+        }
+    }
+
+    /// Colored dot image used as an NSMenuItem icon to visualize connection state.
+    private func connectionStateDot() -> NSImage? {
+        let color: NSColor
+        switch settings.connectionState {
+        case .ok:          color = .systemGreen
+        case .suppressed:  color = .systemYellow
+        case .unreachable: color = .systemRed
+        case .unknown:     color = .tertiaryLabelColor
+        }
+        let config = NSImage.SymbolConfiguration(pointSize: 10, weight: .bold)
+            .applying(.init(paletteColors: [color]))
+        let base = NSImage(systemSymbolName: "circle.fill", accessibilityDescription: nil)
+        return base?.withSymbolConfiguration(config)
     }
 
     private func rebuildMenu() {
@@ -108,6 +151,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         menu.addItem(enableItem)
 
         menu.addItem(.separator())
+
+        let connTitle = String(localized: "Connection: \(connectionStateLabel())")
+        let connItem = NSMenuItem(title: connTitle, action: nil, keyEquivalent: "")
+        connItem.isEnabled = false
+        connItem.image = connectionStateDot()
+        menu.addItem(connItem)
 
         let statusTitle = String(localized: "Status: \(settings.statusText)")
         let statusMenuItem = NSMenuItem(title: statusTitle, action: nil, keyEquivalent: "")

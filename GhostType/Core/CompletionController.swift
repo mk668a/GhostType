@@ -150,9 +150,14 @@ final class CompletionController {
         let label = bundleID ?? "unknown"
         print("[GhostType] \(isManual ? "Manual" : "Auto") trigger in: \(label)")
 
-        settings.statusText = String(localized: "Thinking...")
+        // Don't show "Thinking..." for a request the breaker will immediately
+        // short-circuit — the status would flicker for one frame and then snap
+        // back, which looks like the app is stuck.
+        if !engine.isSuppressed || isManual {
+            settings.statusText = String(localized: "Thinking...")
+        }
 
-        engine.complete(prefix: context.prefix, suffix: context.suffix) { [weak self] result in
+        engine.complete(prefix: context.prefix, suffix: context.suffix, isManual: isManual) { [weak self] result in
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
                 switch result {
@@ -165,11 +170,15 @@ final class CompletionController {
                     self.show(trimmed, cursorRect: context.cursorRect)
                     self.settings.statusText = String(localized: "Ready")
                 case .failure(let error):
+                    // Suppressed = breaker open; stay silent so we don't pester
+                    // the user with errors on every keystroke.
+                    if case LLMError.suppressed = error { return }
+
                     print("[GhostType] Completion error: \(error.localizedDescription)")
-                    self.settings.statusText = String(localized: "Error")
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        self.settings.statusText = String(localized: "Ready")
-                    }
+                    // Keep the error text visible until the next success or
+                    // user action. The previous 2-second auto-revert to "Ready"
+                    // hid the problem and confused users (see Reddit feedback).
+                    self.settings.statusText = error.localizedDescription
                 }
             }
         }

@@ -991,6 +991,96 @@
           }
         }
       }
+    },
+    "Auto-trigger paused after repeated failures. Use the manual shortcut to retry." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "連続したエラーのため自動補完を一時停止しました。手動ショートカットで再試行できます。"
+          }
+        }
+      }
+    },
+    "Connection: %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接続: %@"
+          }
+        }
+      }
+    },
+    "Disconnected" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未接続"
+          }
+        }
+      }
+    },
+    "Inference error: %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "推論エラー: %@"
+          }
+        }
+      }
+    },
+    "LLM server is not running at %@. Start LM Studio, Ollama, or another OpenAI-compatible server." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LLMサーバーが %@ で起動していません。LM Studio、Ollama、または他のOpenAI互換サーバーを起動してください。"
+          }
+        }
+      }
+    },
+    "Network error: %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ネットワークエラー: %@"
+          }
+        }
+      }
+    },
+    "Paused" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一時停止中"
+          }
+        }
+      }
+    },
+    "Server at %@ is not responding (model may be loading or the endpoint URL may be wrong)." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ のサーバーが応答しません (モデルがロード中か、エンドポイントURLが間違っている可能性があります)。"
+          }
+        }
+      }
+    },
+    "Unknown" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未確認"
+          }
+        }
+      }
     }
   }
 }

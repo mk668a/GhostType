@@ -42,6 +42,18 @@ enum AppLanguage: String, CaseIterable, Identifiable {
     }
 }
 
+// MARK: - Connection State
+//
+// Reflects the most recent outcome of a completion request, so the menu bar
+// can show whether the LLM endpoint is healthy at a glance.
+
+enum ConnectionState: Equatable {
+    case unknown        // No request attempted since launch
+    case ok             // Last request succeeded
+    case suppressed     // Auto-trigger temporarily paused after repeated failures
+    case unreachable    // Last request failed (TCP error, timeout, or HTTP error)
+}
+
 // MARK: - App Settings
 
 final class AppSettings: ObservableObject {
@@ -183,6 +195,7 @@ final class AppSettings: ObservableObject {
         didSet { save() }
     }
     @Published var statusText: String = String(localized: "Ready")
+    @Published var connectionState: ConnectionState = .unknown
 
     /// Drives which tab the Settings window opens to. Used by the menu bar's
     /// "Setup Guide..." action and by first-launch.
