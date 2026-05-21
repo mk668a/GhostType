@@ -1081,6 +1081,16 @@
           }
         }
       }
+    },
+    "Check for Updates..." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アップデートを確認..."
+          }
+        }
+      }
     }
   }
 }

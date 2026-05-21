@@ -1,7 +1,6 @@
 # Xcode
 build/
 DerivedData/
-*.xcworkspace
 xcuserdata/
 *.xcuserstate
 *.moved-aside
@@ -19,7 +18,8 @@ xcuserdata/
 # Swift Package Manager
 .build/
 Packages/
-Package.resolved
+# Note: GhostType.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+# is committed so contributors share the same Sparkle revision.
 
 # macOS
 .DS_Store

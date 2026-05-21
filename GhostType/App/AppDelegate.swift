@@ -1,6 +1,7 @@
 import AppKit
 import SwiftUI
 import Combine
+import Sparkle
 
 final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     static private(set) var shared: AppDelegate!
@@ -14,6 +15,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     private var completionController: CompletionController!
     private var settingsWindow: NSWindow?
     private var cancellables = Set<AnyCancellable>()
+
+    /// Drives Sparkle auto-updates. Started immediately on launch so the
+    /// scheduled check (controlled by SUScheduledCheckInterval in Info.plist)
+    /// runs in the background; the menu's "Check for Updates…" item invokes
+    /// `checkForUpdates(_:)` on this controller for manual checks.
+    private let updaterController = SPUStandardUpdaterController(
+        startingUpdater: true,
+        updaterDelegate: nil,
+        userDriverDelegate: nil
+    )
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         AppDelegate.shared = self
@@ -192,6 +203,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         let settingsItem = NSMenuItem(title: String(localized: "Settings..."), action: #selector(openSettingsAction(_:)), keyEquivalent: ",")
         settingsItem.target = self
         menu.addItem(settingsItem)
+
+        let updateItem = NSMenuItem(
+            title: String(localized: "Check for Updates..."),
+            action: #selector(SPUStandardUpdaterController.checkForUpdates(_:)),
+            keyEquivalent: ""
+        )
+        updateItem.target = updaterController
+        menu.addItem(updateItem)
 
         menu.addItem(.separator())
 

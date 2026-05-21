@@ -19,9 +19,9 @@
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
-    <string>0.2.0</string>
+    <string>0.3.0</string>
     <key>CFBundleVersion</key>
-    <string>2</string>
+    <string>3</string>
     <key>LSMinimumSystemVersion</key>
     <string>$(MACOSX_DEPLOYMENT_TARGET)</string>
     <key>LSUIElement</key>
@@ -30,5 +30,13 @@
     <string>GhostType needs accessibility access to read text fields and provide AI-powered text completions across all applications.</string>
     <key>NSHumanReadableCopyright</key>
     <string>Copyright 2026. MIT License.</string>
+    <key>SUFeedURL</key>
+    <string>https://raw.githubusercontent.com/mk668a/GhostType/main/appcast.xml</string>
+    <key>SUPublicEDKey</key>
+    <string>CvjnyrbHhyiuV+01NVDtW8aHm80bAZFR/KUv2yzsj5E=</string>
+    <key>SUEnableAutomaticChecks</key>
+    <true/>
+    <key>SUScheduledCheckInterval</key>
+    <integer>86400</integer>
 </dict>
 </plist>

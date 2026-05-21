@@ -22,6 +22,7 @@
 		A10000015 /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000017 /* MenuBarView.swift */; };
 		A10000030 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = A20000030 /* Localizable.xcstrings */; };
 		A10000031 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = A20000031 /* InfoPlist.xcstrings */; };
+		B10000001 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = B90000001 /* Sparkle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +51,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B10000001 /* Sparkle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -152,6 +154,9 @@
 			dependencies = (
 			);
 			name = GhostType;
+			packageProductDependencies = (
+				B90000001 /* Sparkle */,
+			);
 			productName = GhostType;
 			productReference = A20000099 /* GhostType.app */;
 			productType = "com.apple.product-type.application";
@@ -181,6 +186,9 @@
 				Base,
 			);
 			mainGroup = A40000001;
+			packageReferences = (
+				B80000001 /* XCRemoteSwiftPackageReference "Sparkle" */,
+			);
 			productRefGroup = A40000099 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -333,7 +341,7 @@
 				CODE_SIGN_ENTITLEMENTS = GhostType/GhostType.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEAD_CODE_STRIPPING = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = GhostType/Info.plist;
@@ -341,7 +349,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 0.2.0;
+				MARKETING_VERSION = 0.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ghosttype.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -356,7 +364,7 @@
 				CODE_SIGN_ENTITLEMENTS = GhostType/GhostType.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEAD_CODE_STRIPPING = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = GhostType/Info.plist;
@@ -364,7 +372,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 0.2.0;
+				MARKETING_VERSION = 0.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ghosttype.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -394,6 +402,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B80000001 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.9.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B90000001 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B80000001 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A80000001 /* Project object */;
 }

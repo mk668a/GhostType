@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <channel>
+        <title>GhostType</title>
+        <link>https://raw.githubusercontent.com/mk668a/GhostType/main/appcast.xml</link>
+        <description>Most recent changes with links to updates.</description>
+        <language>en</language>
+        <item>
+            <title>Version 0.3.0</title>
+            <link>https://github.com/mk668a/GhostType/releases/tag/v0.3.0</link>
+            <sparkle:version>3</sparkle:version>
+            <sparkle:shortVersionString>0.3.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <pubDate>Thu, 21 May 2026 09:01:49 +0900</pubDate>
+            <enclosure
+                url="https://github.com/mk668a/GhostType/releases/download/v0.3.0/GhostType-0.3.0.dmg"
+                sparkle:edSignature="QytPE6YPlSUFn/Usgmcnwil2AMqWJvdigGbZZ8CstBMjKQeYf7f8y5+44y+YinT+ZL8YqhTEDazf19yDWr30AA=="
+                length="4524010"
+                type="application/octet-stream" />
+        </item>
+    </channel>
+</rss>
