@@ -102,26 +102,7 @@ final class LLMClient {
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
         urlRequest.httpBody = try JSONSerialization.data(withJSONObject: body)
 
-        let data: Data
-        let response: URLResponse
-        do {
-            (data, response) = try await session.data(for: urlRequest)
-        } catch let error as URLError {
-            switch error.code {
-            case .cannotConnectToHost, .cannotFindHost, .dnsLookupFailed, .notConnectedToInternet:
-                throw LLMError.serverNotRunning(endpoint)
-            case .timedOut:
-                throw LLMError.timedOut(endpoint)
-            default:
-                throw LLMError.networkError(error.localizedDescription)
-            }
-        } catch {
-            throw LLMError.networkError(error.localizedDescription)
-        }
-
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw LLMError.networkError("No HTTP response")
-        }
+        let (data, httpResponse) = try await performRequest(urlRequest)
 
         guard httpResponse.statusCode == 200 else {
             let raw = String(data: data, encoding: .utf8) ?? ""
@@ -138,6 +119,56 @@ final class LLMClient {
         }
 
         return cleanResponse(content)
+    }
+
+    /// Lightweight reachability probe against `/v1/models`. Uses the same
+    /// bounded-timeout session and error mapping as `complete()`. Returns the
+    /// list of model IDs reported by the server (empty if the payload was not
+    /// the expected shape but the server still answered with HTTP 200).
+    func probe() async throws -> [String] {
+        let url = URL(string: "\(endpoint)/v1/models")!
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "GET"
+
+        let (data, httpResponse) = try await performRequest(urlRequest)
+
+        guard httpResponse.statusCode == 200 else {
+            let raw = String(data: data, encoding: .utf8) ?? ""
+            let trimmedBody = raw.count > 200 ? String(raw.prefix(200)) + "…" : raw
+            throw LLMError.inferenceError("HTTP \(httpResponse.statusCode): \(trimmedBody)")
+        }
+
+        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let models = json["data"] as? [[String: Any]] else {
+            return []
+        }
+        return models.compactMap { $0["id"] as? String }
+    }
+
+    /// Sends the request via the bounded-timeout session and maps URL errors
+    /// into our domain `LLMError` cases so callers can branch on intent.
+    private func performRequest(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
+        let data: Data
+        let response: URLResponse
+        do {
+            (data, response) = try await session.data(for: request)
+        } catch let error as URLError {
+            switch error.code {
+            case .cannotConnectToHost, .cannotFindHost, .dnsLookupFailed, .notConnectedToInternet:
+                throw LLMError.serverNotRunning(endpoint)
+            case .timedOut:
+                throw LLMError.timedOut(endpoint)
+            default:
+                throw LLMError.networkError(error.localizedDescription)
+            }
+        } catch {
+            throw LLMError.networkError(error.localizedDescription)
+        }
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw LLMError.networkError("No HTTP response")
+        }
+        return (data, httpResponse)
     }
 
     private func cleanResponse(_ text: String) -> String {

@@ -272,36 +272,18 @@ struct ModelSettingsView: View {
 
     private func testConnection() {
         connectionStatus = .checking
-        let endpoint = settings.serverEndpoint.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
-        guard let url = URL(string: "\(endpoint)/v1/models") else {
-            connectionStatus = .failed(String(localized: "Invalid URL"))
-            return
-        }
-
-        var request = URLRequest(url: url)
-        request.timeoutInterval = 5
-
-        Task {
-            do {
-                let (data, response) = try await URLSession.shared.data(for: request)
-                guard let http = response as? HTTPURLResponse, http.statusCode == 200 else {
-                    await MainActor.run { connectionStatus = .failed(String(localized: "Server returned error")) }
-                    return
+        Task { @MainActor in
+            let result = await AppDelegate.shared.completionEngine.probe()
+            switch result {
+            case .success(let models):
+                connectionStatus = .connected
+                if settings.modelName.isEmpty, let firstModel = models.first {
+                    settings.modelName = firstModel
                 }
-                if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-                   let models = json["data"] as? [[String: Any]],
-                   let firstModel = models.first?["id"] as? String {
-                    await MainActor.run {
-                        connectionStatus = .connected
-                        if settings.modelName.isEmpty {
-                            settings.modelName = firstModel
-                        }
-                    }
-                } else {
-                    await MainActor.run { connectionStatus = .connected }
-                }
-            } catch {
-                await MainActor.run { connectionStatus = .failed(String(localized: "Cannot connect. Is the server running?")) }
+            case .failure(let error):
+                let message = (error as? LLMError)?.errorDescription
+                    ?? String(localized: "Cannot connect. Is the server running?")
+                connectionStatus = .failed(message)
             }
         }
     }
@@ -978,35 +960,18 @@ struct SetupSettingsView: View {
 
     private func testConnection() {
         connectionStatus = .checking
-        let endpoint = settings.serverEndpoint.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
-        guard let url = URL(string: "\(endpoint)/v1/models") else {
-            connectionStatus = .failed(String(localized: "Invalid URL"))
-            return
-        }
-
-        var request = URLRequest(url: url)
-        request.timeoutInterval = 5
-
-        Task {
-            do {
-                let (data, response) = try await URLSession.shared.data(for: request)
-                guard let http = response as? HTTPURLResponse, http.statusCode == 200 else {
-                    await MainActor.run { connectionStatus = .failed(String(localized: "Server returned an error")) }
-                    return
+        Task { @MainActor in
+            let result = await AppDelegate.shared.completionEngine.probe()
+            switch result {
+            case .success(let models):
+                connectionStatus = .connected
+                if settings.modelName.isEmpty, let firstModel = models.first {
+                    settings.modelName = firstModel
                 }
-                if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-                   let models = json["data"] as? [[String: Any]],
-                   let firstModel = models.first?["id"] as? String,
-                   settings.modelName.isEmpty {
-                    await MainActor.run {
-                        connectionStatus = .connected
-                        settings.modelName = firstModel
-                    }
-                } else {
-                    await MainActor.run { connectionStatus = .connected }
-                }
-            } catch {
-                await MainActor.run { connectionStatus = .failed(String(localized: "Cannot connect. Is the server running?")) }
+            case .failure(let error):
+                let message = (error as? LLMError)?.errorDescription
+                    ?? String(localized: "Cannot connect. Is the server running?")
+                connectionStatus = .failed(message)
             }
         }
     }

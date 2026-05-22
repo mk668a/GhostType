@@ -65,6 +65,31 @@ final class CompletionEngine {
         currentTask = nil
     }
 
+    /// User-driven reachability probe for Settings' "Test Connection". Updates
+    /// `settings.connectionState` so the menu bar stays in sync with what the
+    /// Settings panel just showed the user. Intentionally does not feed the
+    /// breaker counter — a single explicit press should not push auto-trigger
+    /// toward suppression — but a success does reset the breaker so a stale
+    /// "Paused" state clears once the user proves the endpoint is healthy.
+    @MainActor
+    func probe() async -> Result<[String], Error> {
+        let client = getClient()
+        do {
+            let models = try await client.probe()
+            consecutiveFailures = 0
+            suppressUntil = nil
+            settings.connectionState = .ok
+            return .success(models)
+        } catch {
+            if let llmError = error as? LLMError, case .suppressed = llmError {
+                // probe() never throws .suppressed today; guard defensively.
+            } else {
+                settings.connectionState = .unreachable
+            }
+            return .failure(error)
+        }
+    }
+
     private func getClient() -> LLMClient {
         let endpoint = settings.serverEndpoint
         let model = settings.modelName
