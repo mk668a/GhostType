@@ -6,6 +6,19 @@
         <description>Most recent changes with links to updates.</description>
         <language>en</language>
         <item>
+            <title>Version 0.3.1</title>
+            <link>https://github.com/mk668a/GhostType/releases/tag/v0.3.1</link>
+            <sparkle:version>4</sparkle:version>
+            <sparkle:shortVersionString>0.3.1</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <pubDate>Fri, 22 May 2026 19:20:17 +0900</pubDate>
+            <enclosure
+                url="https://github.com/mk668a/GhostType/releases/download/v0.3.1/GhostType-0.3.1.dmg"
+                sparkle:edSignature="YMMbTo7UB/YU8fnucJS9jzHq5QGKUu1HbVyL4G7t26NgMqTeVbTbmxT+wWfsP4of0C6Tcq38PvpzFRwVTkVyBA=="
+                length="4521207"
+                type="application/octet-stream" />
+        </item>
+        <item>
             <title>Version 0.3.0</title>
             <link>https://github.com/mk668a/GhostType/releases/tag/v0.3.0</link>
             <sparkle:version>3</sparkle:version>
