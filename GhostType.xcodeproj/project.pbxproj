@@ -16,6 +16,7 @@
 		A10000020 /* InputSourceMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000020 /* InputSourceMonitor.swift */; };
 		A10000021 /* CompletionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000021 /* CompletionController.swift */; };
 		A10000044 /* AppCompatibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000044 /* AppCompatibility.swift */; };
+		A10000045 /* WritingStyleStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000045 /* WritingStyleStore.swift */; };
 		A10000007 /* LLMProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000007 /* LLMProvider.swift */; };
 		A10000040 /* BundledLlamaServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000040 /* BundledLlamaServer.swift */; };
 		A10000041 /* ModelCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000041 /* ModelCatalog.swift */; };
@@ -40,6 +41,7 @@
 		A20000020 /* InputSourceMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputSourceMonitor.swift; sourceTree = "<group>"; };
 		A20000021 /* CompletionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletionController.swift; sourceTree = "<group>"; };
 		A20000044 /* AppCompatibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCompatibility.swift; sourceTree = "<group>"; };
+		A20000045 /* WritingStyleStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingStyleStore.swift; sourceTree = "<group>"; };
 		A20000007 /* LLMProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLMProvider.swift; sourceTree = "<group>"; };
 		A20000040 /* BundledLlamaServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundledLlamaServer.swift; sourceTree = "<group>"; };
 		A20000041 /* ModelCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelCatalog.swift; sourceTree = "<group>"; };
@@ -110,6 +112,7 @@
 				A20000020 /* InputSourceMonitor.swift */,
 				A20000021 /* CompletionController.swift */,
 				A20000044 /* AppCompatibility.swift */,
+				A20000045 /* WritingStyleStore.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -259,6 +262,7 @@
 				A10000020 /* InputSourceMonitor.swift in Sources */,
 				A10000021 /* CompletionController.swift in Sources */,
 				A10000044 /* AppCompatibility.swift in Sources */,
+				A10000045 /* WritingStyleStore.swift in Sources */,
 				A10000007 /* LLMProvider.swift in Sources */,
 				A10000040 /* BundledLlamaServer.swift in Sources */,
 				A10000041 /* ModelCatalog.swift in Sources */,

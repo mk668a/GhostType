@@ -26,7 +26,14 @@ final class CompletionEngine {
         self.settings = settings
     }
 
-    func complete(prefix: String, suffix: String, isManual: Bool, completion: @escaping (Result<String, Error>) -> Void) {
+    func complete(
+        prefix: String,
+        suffix: String,
+        isManual: Bool,
+        bundleID: String? = nil,
+        domain: String? = nil,
+        completion: @escaping (Result<String, Error>) -> Void
+    ) {
         currentTask?.cancel()
 
         if !isManual, isSuppressed {
@@ -37,7 +44,8 @@ final class CompletionEngine {
         currentTask = Task {
             do {
                 let client = try await self.resolveClient()
-                let request = await self.buildRequest(prefix: prefix, suffix: suffix)
+                let request = await self.buildRequest(
+                    prefix: prefix, suffix: suffix, bundleID: bundleID, domain: domain)
                 let result = try await client.complete(request: request)
                 guard !Task.isCancelled else { return }
                 await self.recordSuccess()
@@ -58,7 +66,11 @@ final class CompletionEngine {
     }
 
     @MainActor
-    private func buildRequest(prefix: String, suffix: String) -> FIMRequest {
+    private func buildRequest(prefix: String, suffix: String, bundleID: String?, domain: String?) -> FIMRequest {
+        let extraContext = settings.learnWritingStyle
+            ? WritingStyleStore.shared.context(bundleID: bundleID, domain: domain, excluding: prefix)
+            : []
+
         let style = CompletionGrammar.style(
             preferred: settings.grammarStyle,
             fieldIsMultiline: prefix.contains("\n") || suffix.contains("\n")
@@ -70,6 +82,7 @@ final class CompletionEngine {
             temperature: settings.temperature,
             topP: settings.topP,
             repeatPenalty: settings.repeatPenalty,
+            extraContext: extraContext,
             // The FIM specials are listed explicitly because a base model that
             // has them will happily emit one mid-completion when it decides the
             // span is done, and llama.cpp only treats some of them as EOG.

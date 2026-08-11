@@ -2,6 +2,16 @@
   "sourceLanguage" : "en",
   "version" : "1.0",
   "strings" : {
+    "%@ snippets stored" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存済み%@件"
+          }
+        }
+      }
+    },
     "1. Choose where inference runs" : {
       "localizations" : {
         "ja" : {
@@ -58,6 +68,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "llama.cppサーバーなら、内蔵バックエンドと同じfill-in-the-middleと文法制約の経路が使えます。GhostTypeが自動で判別します。"
+          }
+        }
+      }
+    },
+    "API Key" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "APIキー"
           }
         }
       }
@@ -182,6 +202,16 @@
         }
       }
     },
+    "Auto-trigger while typing" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "入力中に自動で補完する"
+          }
+        }
+      }
+    },
     "Backend" : {
       "localizations" : {
         "ja" : {
@@ -262,6 +292,16 @@
         }
       }
     },
+    "Cloud API (your key)" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クラウドAPI(自分のキー)"
+          }
+        }
+      }
+    },
     "Code & technical docs" : {
       "localizations" : {
         "ja" : {
@@ -288,6 +328,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "補完のスタイル"
+          }
+        }
+      }
+    },
+    "Completions leave your Mac" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "補完内容がMacの外に出ます"
           }
         }
       }
@@ -358,6 +408,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "内蔵サーバーを起動できませんでした: %@"
+          }
+        }
+      }
+    },
+    "Custom" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カスタム"
           }
         }
       }
@@ -502,6 +562,16 @@
         }
       }
     },
+    "Erase" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "消去"
+          }
+        }
+      }
+    },
     "Error" : {
       "localizations" : {
         "ja" : {
@@ -628,6 +698,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "生成"
+          }
+        }
+      }
+    },
+    "Get an API key" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "APIキーを取得"
           }
         }
       }
@@ -782,6 +862,16 @@
         }
       }
     },
+    "Keeps recent snippets of your own writing on this Mac and sends a few as context, so completions sound like you instead of like a generic assistant." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "あなたが書いた文章の断片をこのMac内に保存し、その一部を文脈として渡します。汎用的なアシスタント口調ではなく、あなたの書き方に寄った補完になります。"
+          }
+        }
+      }
+    },
     "Keyboard Shortcuts" : {
       "localizations" : {
         "ja" : {
@@ -818,6 +908,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "言語"
+          }
+        }
+      }
+    },
+    "Learn how I write" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自分の書き方を学習させる"
           }
         }
       }
@@ -942,6 +1042,26 @@
         }
       }
     },
+    "No API endpoint set. Pick a provider in Settings." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "APIエンドポイントが未設定です。設定でプロバイダを選んでください。"
+          }
+        }
+      }
+    },
+    "No API key set. Add one in Settings." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "APIキーが未設定です。設定で入力してください。"
+          }
+        }
+      }
+    },
     "No HTTP response" : {
       "localizations" : {
         "ja" : {
@@ -968,6 +1088,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "文法制約なし。制約下でモデルの挙動がおかしいときに使います。"
+          }
+        }
+      }
+    },
+    "No model set. Press Test Connection in Settings to list the models your key can use." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "モデルが未設定です。設定の「接続テスト」を押すと、そのキーで使えるモデルの一覧を取得します。"
           }
         }
       }
@@ -1012,6 +1142,16 @@
         }
       }
     },
+    "Password fields, password managers, and sign-in pages are never recorded. Nothing is uploaded." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パスワード欄、パスワードマネージャ、サインインページは記録しません。どこにも送信されません。"
+          }
+        }
+      }
+    },
     "Paused" : {
       "localizations" : {
         "ja" : {
@@ -1038,6 +1178,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "キーを押してください..."
+          }
+        }
+      }
+    },
+    "Provider" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プロバイダ"
           }
         }
       }
@@ -1382,6 +1532,16 @@
         }
       }
     },
+    "The built-in and external backends run on hardware you control, cost nothing per completion, and send nothing anywhere." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "内蔵バックエンドと外部サーバーは自分の管理下のハードウェアで動き、補完ごとの費用はかからず、どこにも送信しません。"
+          }
+        }
+      }
+    },
     "The bundled llama.cpp server is missing from this build. Reinstall GhostType, or switch to an external server in Settings." : {
       "localizations" : {
         "ja" : {
@@ -1532,12 +1692,52 @@
         }
       }
     },
+    "Use a hosted API with your own key. Your text leaves your Mac, and you pay the provider per request." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ホスト型APIを自分のキーで使います。文章はMacの外に出て、リクエストごとにプロバイダへの課金が発生します。"
+          }
+        }
+      }
+    },
     "Use a server you already run: LM Studio, Ollama, llama.cpp, vLLM. No second copy of the weights." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "すでに動かしているサーバーを使います。LM Studio、Ollama、llama.cpp、vLLMなど。重みが二重に載りません。"
+          }
+        }
+      }
+    },
+    "With a cloud provider, the text around your cursor is sent to that provider on every completion, and each one is billed to your key. Auto-trigger fires whenever you pause typing, so it is off by default here. Turn it on in General only if you have checked what that costs on your plan." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クラウドを選ぶと、補完のたびにカーソル周辺の文章がプロバイダへ送信され、1回ごとにキーへ課金されます。自動補完は入力が止まるたびに発火するため、ここでは既定でオフにしています。プランでの費用を確認したうえで、必要なら「一般」でオンにしてください。"
+          }
+        }
+      }
+    },
+    "Your Writing" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "あなたの文章"
+          }
+        }
+      }
+    },
+    "Your key is stored in the macOS keychain, not in GhostType's settings file. It is sent only to the endpoint above." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キーはGhostTypeの設定ファイルではなく、macOSのキーチェーンに保存されます。送信先は上記のエンドポイントのみです。"
           }
         }
       }

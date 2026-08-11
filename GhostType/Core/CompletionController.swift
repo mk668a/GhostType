@@ -157,9 +157,10 @@ final class CompletionController {
         // A manual trigger does not override it: the point is that a password
         // never reaches the model or the keystroke buffer, not that it is
         // inconvenient to complete one.
+        let domain = AccessibilityManager.shared.focusedWebDomain()
         let policy = AppCompatibility.policy(
             bundleID: bundleID,
-            domain: AccessibilityManager.shared.focusedWebDomain(),
+            domain: domain,
             focusedFieldIsSecure: AccessibilityManager.shared.focusedFieldIsSecure()
         )
         if policy.secure { textBuffer = "" }
@@ -182,7 +183,23 @@ final class CompletionController {
             settings.statusText = String(localized: "Thinking...")
         }
 
-        engine.complete(prefix: context.prefix, suffix: context.suffix, isManual: isManual) { [weak self] result in
+        // Record what the user has written here before asking for more. The
+        // policy check above already returned for secure fields and credential
+        // apps, so nothing sensitive reaches the store.
+        if settings.learnWritingStyle {
+            let recorded = context.prefix
+            Task { @MainActor in
+                WritingStyleStore.shared.record(text: recorded, bundleID: bundleID, domain: domain)
+            }
+        }
+
+        engine.complete(
+            prefix: context.prefix,
+            suffix: context.suffix,
+            isManual: isManual,
+            bundleID: bundleID,
+            domain: domain
+        ) { [weak self] result in
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
                 switch result {

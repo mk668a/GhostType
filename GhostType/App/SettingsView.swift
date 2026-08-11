@@ -211,6 +211,7 @@ final class KeyRecorderView: NSView {
 struct ModelSettingsView: View {
     @EnvironmentObject var settings: AppSettings
     @ObservedObject private var server = BundledLlamaServer.shared
+    @ObservedObject private var styleStore = WritingStyleStore.shared
     @State private var connectionStatus: ConnectionStatus = .unknown
 
     enum ConnectionStatus {
@@ -244,6 +245,27 @@ struct ModelSettingsView: View {
                 embeddedServerSection
             } else {
                 externalServerSection
+            }
+
+            Section("Your Writing") {
+                Toggle("Learn how I write", isOn: $settings.learnWritingStyle)
+                Text("Keeps recent snippets of your own writing on this Mac and sends a few as context, so completions sound like you instead of like a generic assistant.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+
+                HStack {
+                    Text("\(styleStore.sampleCount) snippets stored")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    Spacer()
+                    Button("Erase") { styleStore.clear() }
+                        .controlSize(.small)
+                        .disabled(styleStore.sampleCount == 0)
+                }
+
+                Text("Password fields, password managers, and sign-in pages are never recorded. Nothing is uploaded.")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
             }
 
             Section("Completion Style") {

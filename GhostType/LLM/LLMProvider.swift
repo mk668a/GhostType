@@ -14,6 +14,9 @@ struct FIMRequest {
     /// pushing the model off-topic; presence and frequency penalties were tried
     /// here too and made completions worse, so they are deliberately not sent.
     let repeatPenalty: Double
+    /// Samples of the user's own recent writing, sent ahead of the cursor text
+    /// so the model continues in their register rather than a generic one.
+    let extraContext: [String]
     let stopTokens: [String]
     /// GBNF source, or nil to sample unconstrained. Only honoured by servers
     /// that speak llama.cpp's API.
@@ -176,8 +179,20 @@ actor LLMClient {
         if useInfill {
             body["input_prefix"] = request.prefix
             body["input_suffix"] = request.suffix
+            // `/infill` places `input_extra` ahead of the FIM prefix, which is
+            // exactly where prior writing belongs: close enough to set the
+            // register, far enough that the cursor text stays the dominant
+            // signal for what comes next.
+            if !request.extraContext.isEmpty {
+                body["input_extra"] = request.extraContext.map {
+                    ["filename": "previous_writing", "text": $0]
+                }
+            }
         } else {
-            body["prompt"] = request.prefix
+            // `/completion` has no separate slot, so the samples are simply
+            // what the document says before the current paragraph.
+            let preamble = request.extraContext.joined(separator: "\n\n")
+            body["prompt"] = preamble.isEmpty ? request.prefix : preamble + "\n\n" + request.prefix
         }
         return body
     }

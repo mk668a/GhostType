@@ -145,6 +145,16 @@ final class AppSettings: ObservableObject {
         didSet { save() }
     }
 
+    /// Keep a local record of how the user writes and feed it back as context.
+    ///
+    /// On by default: without it a base model has only the half-sentence at the
+    /// cursor to go on and answers in a generic register, which is the single
+    /// most common reason a completion gets dismissed. Everything stays on disk
+    /// in Application Support and can be erased from Settings.
+    @Published var learnWritingStyle: Bool = true {
+        didSet { save() }
+    }
+
     // UI Settings
     @Published var ghostTextOpacity: Double = 0.5 {
         didSet { save() }
@@ -307,6 +317,7 @@ final class AppSettings: ObservableObject {
         contextWindow = storedContext == 512 ? 2048 : storedContext
         debounceMs = defaults.integer(forKey: "debounceMs").nonZero ?? 300
         autoTrigger = defaults.object(forKey: "autoTrigger") as? Bool ?? true
+        learnWritingStyle = defaults.object(forKey: "learnWritingStyle") as? Bool ?? true
         ghostTextOpacity = defaults.double(forKey: "ghostTextOpacity").nonZeroDouble ?? 0.5
         fontSize = defaults.double(forKey: "fontSize").nonZeroDouble ?? 13.0
         preferredLanguage = defaults.string(forKey: "preferredLanguage") ?? ""
@@ -345,6 +356,7 @@ final class AppSettings: ObservableObject {
         defaults.set(contextWindow, forKey: "contextWindow")
         defaults.set(debounceMs, forKey: "debounceMs")
         defaults.set(autoTrigger, forKey: "autoTrigger")
+        defaults.set(learnWritingStyle, forKey: "learnWritingStyle")
         defaults.set(ghostTextOpacity, forKey: "ghostTextOpacity")
         defaults.set(fontSize, forKey: "fontSize")
         defaults.set(preferredLanguage, forKey: "preferredLanguage")
