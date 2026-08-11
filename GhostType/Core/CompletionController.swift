@@ -1,4 +1,5 @@
 import AppKit
+import NaturalLanguage
 import Combine
 import Foundation
 
@@ -328,17 +329,32 @@ final class CompletionController {
     /// The leading space belongs to the accepted part: taking "world" out of
     /// " world today" and leaving " " behind would glue the word to what the
     /// user already typed.
+    ///
+    /// Word boundaries come from `NLTokenizer` rather than from whitespace,
+    /// because Japanese, Chinese, and Thai do not put spaces between words. A
+    /// whitespace split in those scripts runs to the end of the line, which
+    /// makes accepting a word identical to accepting everything and quietly
+    /// removes the feature for anyone writing in them.
     static func splitFirstWord(_ text: String) -> (head: String, rest: String) {
-        var index = text.startIndex
-
-        while index < text.endIndex, text[index] == " " || text[index] == "\t" {
-            index = text.index(after: index)
+        var start = text.startIndex
+        while start < text.endIndex, text[start] == " " || text[start] == "\t" {
+            start = text.index(after: start)
         }
-        while index < text.endIndex, text[index] != " ", text[index] != "\t", text[index] != "\n" {
-            index = text.index(after: index)
-        }
+        guard start < text.endIndex else { return (text, "") }
 
-        return (String(text[text.startIndex..<index]), String(text[index...]))
+        let body = String(text[start...])
+        let tokenizer = NLTokenizer(unit: .word)
+        tokenizer.string = body
+
+        let tokenRange = tokenizer.tokenRange(at: body.startIndex)
+        guard !tokenRange.isEmpty else { return (text, "") }
+
+        // NLTokenizer indexes into `body`, so the boundary has to be measured
+        // as an offset and re-applied to the original string, which still
+        // carries the leading whitespace.
+        let offset = body.distance(from: body.startIndex, to: tokenRange.upperBound)
+        let end = text.index(start, offsetBy: offset)
+        return (String(text[text.startIndex..<end]), String(text[end...]))
     }
 
     private func dismiss() {
