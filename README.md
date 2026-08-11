@@ -15,6 +15,10 @@ English · [日本語](docs/i18n/README.ja.md)
   <img src="https://img.shields.io/badge/privacy-100%25%20local-brightgreen" alt="100% Local">
 </p>
 
+<p align="center">
+  <img src="images/demo.gif" alt="Typing pauses, grey ghost text appears at the cursor, Tab accepts it" width="760">
+</p>
+
 GhostType is a free, MIT-licensed alternative to [Cotypist](https://cotypist.app/), the closed-source Mac autocomplete app.
 
 ## The situation
@@ -66,14 +70,21 @@ If your external server happens to be `llama-server`, GhostType detects that aut
 
 ## Install
 
-Download the latest `.dmg` from the [Releases](https://github.com/mk668a/GhostType/releases) page.
+Download the latest `.dmg` from the [Releases](https://github.com/mk668a/GhostType/releases) page, open it, and drag **GhostType** into **Applications**.
 
-1. Open the `.dmg`
-2. Drag **GhostType** into **Applications**
-3. Launch it and follow the setup guide
+### Approving it on first launch
 
-> **Note:** macOS shows an "unidentified developer" warning on first launch.
-> Right-click the app and choose **Open**, or go to **System Settings > Privacy & Security** and click **Open Anyway**.
+GhostType is not notarized. Notarization requires a paid Apple Developer account, which this project does not have, so macOS blocks the first launch and asks you to approve the app by hand. It is a one-time step.
+
+1. Open **GhostType**. macOS refuses, saying it cannot verify the developer.
+2. Open **System Settings > Privacy & Security** and scroll down to **Security**.
+3. Next to the message about GhostType being blocked, click **Open Anyway**, then **Open** to confirm.
+
+> On macOS 15 Sequoia and later, Control-clicking the app and choosing **Open** does not work. Apple removed that shortcut, so System Settings is the only route.
+
+Updates that GhostType installs for itself later do not repeat this. The check applies to the first launch of a downloaded app, not to one updating in place.
+
+To skip the whole thing, [build it yourself](#build-from-source). An app you compiled was never downloaded, so it carries no quarantine flag and launches with no prompt at all.
 
 ## Setup
 
