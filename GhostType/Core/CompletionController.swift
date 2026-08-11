@@ -85,7 +85,9 @@ final class CompletionController {
         case .toggle:
             settings.isEnabled.toggle()
         case .accept:
-            accept()
+            accept(settings.tabAcceptsWord ? .word : .full)
+        case .acceptAlternate:
+            accept(settings.tabAcceptsWord ? .full : .word)
         case .dismiss:
             dismiss()
         case .manualTrigger:
@@ -204,7 +206,8 @@ final class CompletionController {
                 guard let self = self else { return }
                 switch result {
                 case .success(let text):
-                    let completion = Self.normalize(text, following: context.prefix)
+                    var completion = Self.normalize(text, following: context.prefix)
+                    completion = Self.capLength(completion, to: self.settings.maxCompletionChars)
                     guard !completion.isEmpty else {
                         self.settings.statusText = String(localized: "Ready")
                         return
@@ -246,6 +249,24 @@ final class CompletionController {
         return result
     }
 
+    /// Trims an over-long suggestion back to the last word boundary that fits.
+    ///
+    /// The token budget bounds generation, but tokens are not characters and a
+    /// model that spends all of them on one clause still produces more ghost
+    /// text than anyone reads mid-sentence. Cutting at a word boundary keeps
+    /// what is shown readable; cutting mid-word would look like a rendering bug.
+    static func capLength(_ text: String, to limit: Int) -> String {
+        guard limit > 0, text.count > limit else { return text }
+
+        let capped = text.prefix(limit)
+        guard let lastBreak = capped.lastIndex(where: { $0 == " " || $0 == "\n" || $0 == "\t" }) else {
+            // A single word longer than the whole budget: show it whole rather
+            // than a fragment the user cannot act on.
+            return String(capped)
+        }
+        return String(capped[capped.startIndex..<lastBreak])
+    }
+
     private func resolveContext() -> TextContext? {
         if let ax = AccessibilityManager.shared.getTextContext(maxChars: settings.contextWindow) {
             return ax
@@ -265,12 +286,59 @@ final class CompletionController {
         overlay.show(text: text, at: cursorRect)
     }
 
-    private func accept() {
-        guard let text = pendingCompletion else { return }
-        let textToInsert = text
+    enum AcceptGranularity {
+        case word
+        case full
+    }
+
+    /// Inserts part or all of the pending suggestion.
+    ///
+    /// Taking a word at a time is what makes a long suggestion safe to show:
+    /// the user stops exactly where they stop agreeing instead of accepting a
+    /// sentence and deleting half of it. The remainder stays on screen as ghost
+    /// text, so repeated presses walk through it.
+    private func accept(_ granularity: AcceptGranularity) {
+        guard let text = pendingCompletion, !text.isEmpty else { return }
+
+        let head: String
+        let rest: String
+        switch granularity {
+        case .full:
+            head = text
+            rest = ""
+        case .word:
+            (head, rest) = Self.splitFirstWord(text)
+        }
+
+        guard !head.isEmpty else { return }
+
+        // Insertion moves the caret, so the overlay has to be torn down and
+        // re-shown at the new position rather than left where it was.
         dismiss()
-        AccessibilityManager.shared.insertText(textToInsert)
+        AccessibilityManager.shared.insertText(head)
         textBuffer = ""
+
+        guard !rest.isEmpty else { return }
+        let cursor = AccessibilityManager.shared.getCursorPosition()
+        show(rest, cursorRect: cursor)
+    }
+
+    /// Splits off the leading whitespace plus the first word.
+    ///
+    /// The leading space belongs to the accepted part: taking "world" out of
+    /// " world today" and leaving " " behind would glue the word to what the
+    /// user already typed.
+    static func splitFirstWord(_ text: String) -> (head: String, rest: String) {
+        var index = text.startIndex
+
+        while index < text.endIndex, text[index] == " " || text[index] == "\t" {
+            index = text.index(after: index)
+        }
+        while index < text.endIndex, text[index] != " ", text[index] != "\t", text[index] != "\n" {
+            index = text.index(after: index)
+        }
+
+        return (String(text[text.startIndex..<index]), String(text[index...]))
     }
 
     private func dismiss() {

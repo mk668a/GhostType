@@ -15,6 +15,8 @@ enum KeyEvent {
     case dismissingKey
     /// The accept-completion hotkey fired. The tap swallows the event.
     case accept
+    /// The accept key with Shift held: takes the other granularity.
+    case acceptAlternate
     /// The dismiss-completion hotkey fired. The tap swallows the event.
     case dismiss
     /// The manual-trigger hotkey fired. The tap swallows the event.
@@ -166,6 +168,10 @@ final class GlobalKeyMonitor {
         if snapshot.isShowingCompletion {
             if snapshot.keyAccept.matches(keyCode: keyCode, flags: flags) {
                 emit(.accept)
+                return nil
+            }
+            if snapshot.keyAccept.matchesWithShiftAdded(keyCode: keyCode, flags: flags) {
+                emit(.acceptAlternate)
                 return nil
             }
             if snapshot.keyDismiss.matches(keyCode: keyCode, flags: flags) {

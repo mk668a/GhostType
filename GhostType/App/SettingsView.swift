@@ -93,6 +93,14 @@ struct GeneralSettingsView: View {
                 KeybindingRecordRow(label: "Manual trigger", binding: $settings.keyManualTrigger)
                 KeybindingRecordRow(label: "Toggle GhostType", binding: $settings.keyToggle)
 
+                Picker("The accept key takes", selection: $settings.tabAcceptsWord) {
+                    Text("One word").tag(true)
+                    Text("The whole suggestion").tag(false)
+                }
+                Text("Holding Shift with the accept key always does the other one. Accepting a word at a time lets you stop partway through a long suggestion instead of deleting the rest.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+
                 HStack {
                     Spacer()
                     Button("Reset to Defaults") {
@@ -567,6 +575,12 @@ struct InferenceSettingsView: View {
                     Slider(value: $settings.topP, in: 0...1, step: 0.05)
                     Text(String(format: "%.2f", settings.topP))
                         .frame(width: 40)
+                }
+                HStack {
+                    Text("Max Suggestion Length (chars)")
+                    Spacer()
+                    TextField("", value: $settings.maxCompletionChars, format: .number)
+                        .frame(width: 80)
                 }
                 HStack {
                     Text("Repetition Penalty")

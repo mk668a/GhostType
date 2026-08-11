@@ -114,8 +114,25 @@ final class AppSettings: ObservableObject {
         didSet { save() }
     }
 
+    /// What the accept key takes: one word, or the whole suggestion.
+    ///
+    /// Defaulting to a word is what makes a long suggestion harmless. The model
+    /// can propose a whole sentence and the user still stops exactly where they
+    /// stop agreeing, instead of accepting text they then have to delete.
+    /// Shift plus the same key always does the other one.
+    @Published var tabAcceptsWord: Bool = true {
+        didSet { save() }
+    }
+
     // Inference Parameters
-    @Published var maxTokens: Int = 64 {
+    /// 64 produced suggestions longer than anyone reads mid-sentence. Inline
+    /// completion is a clause, not a paragraph.
+    @Published var maxTokens: Int = 24 {
+        didSet { save() }
+    }
+    /// Hard ceiling on the suggestion actually shown, in characters. Trimmed
+    /// back to a word boundary rather than cut mid-word.
+    @Published var maxCompletionChars: Int = 120 {
         didSet { save() }
     }
     @Published var temperature: Double = 0.2 {
@@ -306,7 +323,12 @@ final class AppSettings: ObservableObject {
         grammarStyle = defaults.string(forKey: "grammarStyle").flatMap(CompletionGrammar.Style.init(rawValue:)) ?? .singleLine
         serverEndpoint = defaults.string(forKey: "serverEndpoint") ?? "http://127.0.0.1:1234"
         modelName = defaults.string(forKey: "modelName") ?? ""
-        maxTokens = defaults.integer(forKey: "maxTokens").nonZero ?? 64
+        // 64 was the old default and is longer than an inline suggestion
+        // should be, so existing installs are lifted off it once.
+        let storedMaxTokens = defaults.integer(forKey: "maxTokens").nonZero ?? 24
+        maxTokens = storedMaxTokens == 64 ? 24 : storedMaxTokens
+        maxCompletionChars = defaults.integer(forKey: "maxCompletionChars").nonZero ?? 120
+        tabAcceptsWord = defaults.object(forKey: "tabAcceptsWord") as? Bool ?? true
         temperature = defaults.double(forKey: "temperature").nonZeroDouble ?? 0.2
         topP = defaults.double(forKey: "topP").nonZeroDouble ?? 0.9
         repeatPenalty = defaults.double(forKey: "repeatPenalty").nonZeroDouble ?? 1.1
@@ -350,6 +372,8 @@ final class AppSettings: ObservableObject {
         defaults.set(serverEndpoint, forKey: "serverEndpoint")
         defaults.set(modelName, forKey: "modelName")
         defaults.set(maxTokens, forKey: "maxTokens")
+        defaults.set(maxCompletionChars, forKey: "maxCompletionChars")
+        defaults.set(tabAcceptsWord, forKey: "tabAcceptsWord")
         defaults.set(temperature, forKey: "temperature")
         defaults.set(topP, forKey: "topP")
         defaults.set(repeatPenalty, forKey: "repeatPenalty")
@@ -398,6 +422,19 @@ struct KeyBinding: Equatable, Codable {
             }
         }
         return pressedMods == requiredMods
+    }
+
+    /// Matches this binding with Shift held on top of it.
+    ///
+    /// Used to give one key two granularities (Tab takes a word, Shift+Tab
+    /// takes the whole suggestion) without asking the user to configure a
+    /// second shortcut. Returns false when the binding already uses Shift,
+    /// since then the two would be the same chord.
+    func matchesWithShiftAdded(keyCode: Int64, flags: CGEventFlags) -> Bool {
+        guard !modifiers.contains(.shift) else { return false }
+        var shifted = self
+        shifted.modifiers.insert(.shift)
+        return shifted.matches(keyCode: keyCode, flags: flags)
     }
 
     static let defaultAccept = KeyBinding(keyCode: 48, modifiers: [])              // Tab

@@ -782,6 +782,16 @@
         }
       }
     },
+    "Holding Shift with the accept key always does the other one. Accepting a word at a time lets you stop partway through a long suggestion instead of deleting the rest." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shiftを押しながら確定キーを押すと、常にもう一方が実行されます。1単語ずつ確定すれば、長い提案でも途中で止められるので、後から消す必要がありません。"
+          }
+        }
+      }
+    },
     "Idle. Starts on your first keystroke." : {
       "localizations" : {
         "ja" : {
@@ -962,6 +972,16 @@
         }
       }
     },
+    "Max Suggestion Length (chars)" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提案の最大文字数"
+          }
+        }
+      }
+    },
     "Max Tokens" : {
       "localizations" : {
         "ja" : {
@@ -1108,6 +1128,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "CGEventTapでシステム全体のキー入力を監視します。"
+          }
+        }
+      }
+    },
+    "One word" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1単語"
           }
         }
       }
@@ -1532,6 +1562,16 @@
         }
       }
     },
+    "The accept key takes" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "確定キーで入る量"
+          }
+        }
+      }
+    },
     "The built-in and external backends run on hardware you control, cost nothing per completion, and send nothing anywhere." : {
       "localizations" : {
         "ja" : {
@@ -1558,6 +1598,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "内蔵サーバーが応答可能になりませんでした: %@"
+          }
+        }
+      }
+    },
+    "The whole suggestion" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提案の全体"
           }
         }
       }
