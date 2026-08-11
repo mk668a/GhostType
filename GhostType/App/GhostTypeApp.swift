@@ -295,9 +295,39 @@ final class AppSettings: ObservableObject {
 
     private let defaults = UserDefaults.standard
 
+    /// True while `load()` is assigning stored values back into the published
+    /// properties.
+    ///
+    /// Every property saves on `didSet`, and `save()` writes the whole struct.
+    /// Without this guard the first assignment in `load()` flushed all the
+    /// *other* properties at their initial values, so each subsequent line read
+    /// back a default it had just overwritten. Only the first property survived
+    /// a relaunch; everything else silently reset, including the excluded-app
+    /// lists, which meant auto-trigger started firing inside editors and
+    /// terminals it is supposed to stay out of.
+    private var isLoading = false
+
     init() {
         load()
+        migrate()
         applyLanguagePreference()
+    }
+
+    /// Repairs settings damaged by the save-during-load bug above.
+    ///
+    /// An empty exclusion list is indistinguishable from a deliberate choice,
+    /// so this runs once, keyed on a version number, rather than every launch.
+    private func migrate() {
+        let version = defaults.integer(forKey: "settingsVersion")
+        guard version < 2 else { return }
+
+        if excludedBundleIDs.isEmpty {
+            excludedBundleIDs = AppSettings.defaultExcludedBundleIDs
+        }
+        if manualOnlyBundleIDs.isEmpty {
+            manualOnlyBundleIDs = AppSettings.defaultManualOnlyBundleIDs
+        }
+        defaults.set(2, forKey: "settingsVersion")
     }
 
     /// Writes the chosen UI language to `AppleLanguages` so the next launch
@@ -312,6 +342,9 @@ final class AppSettings: ObservableObject {
     }
 
     private func load() {
+        isLoading = true
+        defer { isLoading = false }
+
         // Existing installs were configured against an external server before
         // the embedded backend existed. Flipping them to `.embedded` on upgrade
         // would silently break a working setup and demand a multi-gigabyte
@@ -366,6 +399,7 @@ final class AppSettings: ObservableObject {
     }
 
     private func save() {
+        guard !isLoading else { return }
         defaults.set(backend.rawValue, forKey: "backend")
         defaults.set(embeddedModelID, forKey: "embeddedModelID")
         defaults.set(grammarStyle.rawValue, forKey: "grammarStyle")
