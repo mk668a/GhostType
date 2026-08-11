@@ -210,6 +210,7 @@ final class KeyRecorderView: NSView {
 
 struct ModelSettingsView: View {
     @EnvironmentObject var settings: AppSettings
+    @ObservedObject private var server = BundledLlamaServer.shared
     @State private var connectionStatus: ConnectionStatus = .unknown
 
     enum ConnectionStatus {
@@ -218,56 +219,153 @@ struct ModelSettingsView: View {
 
     var body: some View {
         Form {
-            Section("LLM Server") {
-                Text("GhostType connects to an OpenAI-compatible API server.\nStart your LLM in LM Studio, Ollama, or any compatible app before using.")
+            Section("Inference Backend") {
+                Picker("Run inference with", selection: $settings.backend) {
+                    ForEach(LLMBackend.allCases) { option in
+                        Text(option.displayName).tag(option)
+                    }
+                }
+                .pickerStyle(.radioGroup)
+
+                Text(settings.backend.summary)
                     .font(.caption)
                     .foregroundColor(.secondary)
 
-                TextField("Server Endpoint", text: $settings.serverEndpoint)
-                    .font(.system(.body, design: .monospaced))
-                TextField("Model Name (optional, auto-detected if blank)", text: $settings.modelName)
-                    .font(.system(.body, design: .monospaced))
+                if settings.backend == .embedded, !BundledLlamaServer.isAvailable {
+                    Label("This build does not include the llama.cpp binaries. Run scripts/fetch-llama.sh and rebuild, or use an external server.",
+                          systemImage: "exclamationmark.triangle.fill")
+                        .font(.caption)
+                        .foregroundColor(.orange)
+                }
+            }
 
-                HStack {
-                    Button("Test Connection") { testConnection() }
+            if settings.backend == .embedded {
+                embeddedModelSection
+                embeddedServerSection
+            } else {
+                externalServerSection
+            }
 
-                    Spacer()
-
-                    switch connectionStatus {
-                    case .unknown:
-                        EmptyView()
-                    case .checking:
-                        ProgressView().controlSize(.small)
-                        Text("Connecting...").font(.caption).foregroundColor(.secondary)
-                    case .connected:
-                        Image(systemName: "checkmark.circle.fill").foregroundColor(.green)
-                        Text("Connected").font(.caption).foregroundColor(.green)
-                    case .failed(let msg):
-                        Image(systemName: "xmark.circle.fill").foregroundColor(.red)
-                        Text(msg).font(.caption).foregroundColor(.red).lineLimit(2)
+            Section("Completion Style") {
+                Picker("Shape", selection: $settings.grammarStyle) {
+                    ForEach(CompletionGrammar.Style.allCases) { style in
+                        Text(style.displayName).tag(style)
                     }
                 }
-            }
-
-            Section("Compatible Apps") {
-                VStack(alignment: .leading, spacing: 6) {
-                    CompatibleAppRow(name: "LM Studio", endpoint: "http://127.0.0.1:1234", note: "GUI, easy model management")
-                    CompatibleAppRow(name: "Ollama", endpoint: "http://127.0.0.1:11434", note: "CLI, ollama serve")
-                    CompatibleAppRow(name: "llama.cpp", endpoint: "http://127.0.0.1:8080", note: "llama-server -m model.gguf")
-                    CompatibleAppRow(name: "vLLM / LocalAI", endpoint: "http://127.0.0.1:8000", note: "Advanced, high throughput")
-                }
-            }
-
-            Section("Recommended Models (FIM-capable)") {
-                VStack(alignment: .leading, spacing: 4) {
-                    ModelInfoRow(name: "Qwen2.5-Coder-3B", size: "~2GB", note: "Code & technical docs")
-                    ModelInfoRow(name: "DeepSeek-Coder-V2-Lite", size: "~2GB", note: "FIM-specialized, high quality")
-                    ModelInfoRow(name: "CodeGemma-2B", size: "~1.5GB", note: "Ultra-lightweight, low latency")
-                }
+                Text(settings.grammarStyle.summary)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                Text("Constrains the sampler so the model cannot spend tokens on text GhostType would discard. Applies to the built-in backend and to any external llama.cpp server.")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
             }
         }
         .formStyle(.grouped)
         .padding()
+    }
+
+    // MARK: - Embedded backend
+
+    @ViewBuilder
+    private var embeddedModelSection: some View {
+        // Grouped so the choice reads as "what am I writing?" rather than a
+        // flat list of model names the user has to already understand.
+        ForEach([CatalogModel.Kind.prose, .code], id: \.self) { kind in
+            Section(kind.sectionTitle) {
+                ForEach(CatalogModel.models(ofKind: kind)) { model in
+                    EmbeddedModelRow(
+                        model: model,
+                        isSelected: settings.embeddedModelID == model.id,
+                        onSelect: { settings.embeddedModelID = model.id }
+                    )
+                }
+
+                if kind == .code {
+                    Text("Models are stored in ~/Library/Application Support/GhostType/models and never leave your Mac.")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var embeddedServerSection: some View {
+        Section("Server") {
+            HStack(spacing: 6) {
+                switch server.state {
+                case .stopped:
+                    Image(systemName: "moon.zzz").foregroundColor(.secondary)
+                    Text("Idle. Starts on your first keystroke.").font(.caption).foregroundColor(.secondary)
+                case .starting:
+                    ProgressView().controlSize(.small)
+                    Text("Loading the model...").font(.caption).foregroundColor(.secondary)
+                case .running(let endpoint):
+                    Image(systemName: "checkmark.circle.fill").foregroundColor(.green)
+                    Text("Running on \(endpoint)").font(.caption).foregroundColor(.green)
+                case .failed(let message):
+                    Image(systemName: "xmark.circle.fill").foregroundColor(.red)
+                    Text(message).font(.caption).foregroundColor(.red).lineLimit(3)
+                }
+                Spacer()
+            }
+        }
+    }
+
+    // MARK: - External backend
+
+    @ViewBuilder
+    private var externalServerSection: some View {
+        Section("LLM Server") {
+            Text("GhostType connects to an OpenAI-compatible API server.\nStart your LLM in LM Studio, Ollama, or any compatible app before using.")
+                .font(.caption)
+                .foregroundColor(.secondary)
+
+            TextField("Server Endpoint", text: $settings.serverEndpoint)
+                .font(.system(.body, design: .monospaced))
+            TextField("Model Name (optional, auto-detected if blank)", text: $settings.modelName)
+                .font(.system(.body, design: .monospaced))
+
+            HStack {
+                Button("Test Connection") { testConnection() }
+
+                Spacer()
+
+                switch connectionStatus {
+                case .unknown:
+                    EmptyView()
+                case .checking:
+                    ProgressView().controlSize(.small)
+                    Text("Connecting...").font(.caption).foregroundColor(.secondary)
+                case .connected:
+                    Image(systemName: "checkmark.circle.fill").foregroundColor(.green)
+                    Text("Connected").font(.caption).foregroundColor(.green)
+                case .failed(let msg):
+                    Image(systemName: "xmark.circle.fill").foregroundColor(.red)
+                    Text(msg).font(.caption).foregroundColor(.red).lineLimit(2)
+                }
+            }
+        }
+
+        Section("Compatible Apps") {
+            VStack(alignment: .leading, spacing: 6) {
+                CompatibleAppRow(name: "LM Studio", endpoint: "http://127.0.0.1:1234", note: "GUI, easy model management")
+                CompatibleAppRow(name: "Ollama", endpoint: "http://127.0.0.1:11434", note: "CLI, ollama serve")
+                CompatibleAppRow(name: "llama.cpp", endpoint: "http://127.0.0.1:8080", note: "llama-server -m model.gguf")
+                CompatibleAppRow(name: "vLLM / LocalAI", endpoint: "http://127.0.0.1:8000", note: "Advanced, high throughput")
+            }
+            Text("A llama.cpp server unlocks the same fill-in-the-middle and grammar path the built-in backend uses. GhostType detects it automatically.")
+                .font(.caption2)
+                .foregroundColor(.secondary)
+        }
+
+        Section("Recommended Models (FIM-capable)") {
+            VStack(alignment: .leading, spacing: 4) {
+                ModelInfoRow(name: "Qwen2.5-Coder-3B", size: "~2GB", note: "Code & technical docs")
+                ModelInfoRow(name: "DeepSeek-Coder-V2-Lite", size: "~2GB", note: "FIM-specialized, high quality")
+                ModelInfoRow(name: "CodeGemma-2B", size: "~1.5GB", note: "Ultra-lightweight, low latency")
+            }
+        }
     }
 
     private func testConnection() {
@@ -285,6 +383,107 @@ struct ModelSettingsView: View {
                     ?? String(localized: "Cannot connect. Is the server running?")
                 connectionStatus = .failed(message)
             }
+        }
+    }
+}
+
+/// One row of the embedded-backend model list: pick it, fetch it, or delete it.
+///
+/// Download state lives in the shared `ModelDownloader` rather than in the row,
+/// so navigating away from Settings mid-download does not cancel a 1.6 GB
+/// transfer.
+struct EmbeddedModelRow: View {
+    let model: CatalogModel
+    let isSelected: Bool
+    let onSelect: () -> Void
+
+    @ObservedObject private var downloader = ModelDownloader.shared
+    @State private var installed: Bool = false
+    @State private var errorText: String?
+
+    private var isDownloadingThis: Bool {
+        downloader.isDownloading && downloader.activeModelID == model.id
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(alignment: .firstTextBaseline) {
+                if installed {
+                    Button {
+                        onSelect()
+                    } label: {
+                        Image(systemName: isSelected ? "largecircle.fill.circle" : "circle")
+                            .foregroundColor(isSelected ? .accentColor : .secondary)
+                    }
+                    .buttonStyle(.plain)
+                } else {
+                    Image(systemName: "circle.dotted").foregroundColor(.secondary)
+                }
+
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(model.displayName).font(.callout)
+                    Text(model.summary).font(.caption2).foregroundColor(.secondary)
+                }
+
+                Spacer()
+
+                Text(model.formattedSize).font(.caption2).foregroundColor(.secondary)
+
+                if isDownloadingThis {
+                    Button("Stop") { downloader.cancel() }
+                        .controlSize(.small)
+                } else if installed {
+                    Button("Remove") { remove() }
+                        .controlSize(.small)
+                } else {
+                    Button("Download") { download() }
+                        .controlSize(.small)
+                        .disabled(downloader.isDownloading)
+                }
+            }
+
+            if isDownloadingThis {
+                ProgressView(value: downloader.fractionCompleted ?? 0)
+                    .controlSize(.small)
+            }
+
+            if let errorText {
+                Text(errorText).font(.caption2).foregroundColor(.red).lineLimit(2)
+            }
+        }
+        .padding(.vertical, 2)
+        .onAppear { installed = ModelStore.isInstalled(model) }
+        .onChange(of: downloader.phase) { _ in
+            installed = ModelStore.isInstalled(model)
+        }
+    }
+
+    private func download() {
+        errorText = nil
+        Task {
+            do {
+                try await downloader.download(model)
+                installed = ModelStore.isInstalled(model)
+                // Downloading a model is an unambiguous statement of intent, so
+                // adopt it rather than making the user pick it afterwards.
+                if installed { onSelect() }
+            } catch is CancellationError {
+                // Stopping is a user action, not something to report back at them.
+            } catch let error as ModelDownloadError {
+                if case .cancelled = error { return }
+                errorText = error.localizedDescription
+            } catch {
+                errorText = error.localizedDescription
+            }
+        }
+    }
+
+    private func remove() {
+        do {
+            try ModelStore.remove(model)
+            installed = false
+        } catch {
+            errorText = error.localizedDescription
         }
     }
 }
@@ -347,6 +546,15 @@ struct InferenceSettingsView: View {
                     Text(String(format: "%.2f", settings.topP))
                         .frame(width: 40)
                 }
+                HStack {
+                    Text("Repetition Penalty")
+                    Slider(value: $settings.repeatPenalty, in: 1.0...1.5, step: 0.05)
+                    Text(String(format: "%.2f", settings.repeatPenalty))
+                        .frame(width: 40)
+                }
+                Text("1.00 disables it. Small models loop without it, repeating the same clause until they run out of tokens.")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
             }
 
             Section("Context") {
@@ -733,33 +941,26 @@ struct CompletionTestField: NSViewRepresentable {
 
             guard !prefix.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
 
-            let client = LLMClient(
-                endpoint: settings.serverEndpoint,
-                model: settings.modelName
-            )
-
-            let request = FIMRequest(
+            // Route the playground through the same engine the app uses, so
+            // "try it here" exercises whichever backend is actually selected —
+            // including the bundled server — instead of always testing the
+            // external endpoint.
+            currentTask?.cancel()
+            currentTask = nil
+            AppDelegate.shared.completionEngine.complete(
                 prefix: prefix,
                 suffix: suffix,
-                maxTokens: settings.maxTokens,
-                temperature: settings.temperature,
-                topP: settings.topP,
-                stopTokens: ["\n\n", "<|fim_pad|>", "<|endoftext|>"]
-            )
-
-            currentTask?.cancel()
-            currentTask = Task {
-                do {
-                    let result = try await client.complete(request: request)
-                    guard !Task.isCancelled else { return }
-                    let trimmed = result.trimmingCharacters(in: .whitespacesAndNewlines)
-                    guard !trimmed.isEmpty else { return }
-                    await MainActor.run {
+                isManual: true
+            ) { result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let text):
+                        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+                        guard !trimmed.isEmpty else { return }
                         self.showGhost(textView, text: trimmed, at: cursorLocation)
+                    case .failure(let error):
+                        print("[GhostType Test] \(error.localizedDescription)")
                     }
-                } catch {
-                    guard !Task.isCancelled else { return }
-                    print("[GhostType Test] \(error.localizedDescription)")
                 }
             }
         }
@@ -817,32 +1018,53 @@ struct SetupSettingsView: View {
                     .foregroundColor(.secondary)
             }
 
-            Section("1. Connect to your LLM server") {
-                Text("Start a local LLM (LM Studio, Ollama, llama.cpp, …) then enter its endpoint here.")
+            Section("1. Choose where inference runs") {
+                Picker("Backend", selection: $settings.backend) {
+                    ForEach(LLMBackend.allCases) { option in
+                        Text(option.displayName).tag(option)
+                    }
+                }
+                .pickerStyle(.radioGroup)
+
+                Text(settings.backend.summary)
                     .font(.caption)
                     .foregroundColor(.secondary)
 
-                TextField("Endpoint", text: $settings.serverEndpoint)
-                    .font(.system(.body, design: .monospaced))
-                TextField("Model (optional, auto-detect if blank)", text: $settings.modelName)
-                    .font(.system(.body, design: .monospaced))
+                if settings.backend == .embedded {
+                    // The whole point of the built-in backend is that this
+                    // screen ends with a working app, so the recommended model
+                    // is downloadable right here rather than behind another tab.
+                    EmbeddedModelRow(
+                        model: CatalogModel.recommended,
+                        isSelected: settings.embeddedModelID == CatalogModel.recommended.id,
+                        onSelect: { settings.embeddedModelID = CatalogModel.recommended.id }
+                    )
+                    Text("Other sizes are in the Model tab.")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                } else {
+                    TextField("Endpoint", text: $settings.serverEndpoint)
+                        .font(.system(.body, design: .monospaced))
+                    TextField("Model (optional, auto-detect if blank)", text: $settings.modelName)
+                        .font(.system(.body, design: .monospaced))
 
-                HStack {
-                    Button("Test Connection") { testConnection() }
+                    HStack {
+                        Button("Test Connection") { testConnection() }
 
-                    Spacer()
+                        Spacer()
 
-                    switch connectionStatus {
-                    case .unknown:
-                        EmptyView()
-                    case .checking:
-                        ProgressView().controlSize(.small)
-                    case .connected:
-                        Label("Connected", systemImage: "checkmark.circle.fill")
-                            .foregroundColor(.green).font(.caption)
-                    case .failed(let msg):
-                        Label(msg, systemImage: "xmark.circle.fill")
-                            .foregroundColor(.red).font(.caption).lineLimit(1)
+                        switch connectionStatus {
+                        case .unknown:
+                            EmptyView()
+                        case .checking:
+                            ProgressView().controlSize(.small)
+                        case .connected:
+                            Label("Connected", systemImage: "checkmark.circle.fill")
+                                .foregroundColor(.green).font(.caption)
+                        case .failed(let msg):
+                            Label(msg, systemImage: "xmark.circle.fill")
+                                .foregroundColor(.red).font(.caption).lineLimit(1)
+                        }
                     }
                 }
             }

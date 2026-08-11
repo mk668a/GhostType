@@ -2,12 +2,32 @@
   "sourceLanguage" : "en",
   "version" : "1.0",
   "strings" : {
+    "1. Choose where inference runs" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. 推論の実行場所を選ぶ"
+          }
+        }
+      }
+    },
     "1. Connect to your LLM server" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1. LLM サーバーに接続"
+            "value" : "1. LLMサーバーに接続"
+          }
+        }
+      }
+    },
+    "1.00 disables it. Small models loop without it, repeating the same clause until they run out of tokens." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1.00で無効。小さいモデルはこれが無いと同じ言い回しをトークンが尽きるまで繰り返します。"
           }
         }
       }
@@ -28,6 +48,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "3. ショートカット"
+          }
+        }
+      }
+    },
+    "A llama.cpp server unlocks the same fill-in-the-middle and grammar path the built-in backend uses. GhostType detects it automatically." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "llama.cppサーバーなら、内蔵バックエンドと同じfill-in-the-middleと文法制約の経路が使えます。GhostTypeが自動で判別します。"
           }
         }
       }
@@ -97,7 +127,17 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "設定完了。すべてのアプリで GhostType をお使いいただけます。"
+            "value" : "設定完了。すべてのアプリでGhostTypeをお使いいただけます。"
+          }
+        }
+      }
+    },
+    "Allows short multi-line completions. Better for editors and notes." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "数行の補完を許可します。エディタやメモ向け。"
           }
         }
       }
@@ -122,12 +162,62 @@
         }
       }
     },
+    "Auto-trigger paused after repeated failures. Use the manual shortcut to retry." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "連続したエラーのため自動補完を一時停止しました。手動ショートカットで再試行できます。"
+          }
+        }
+      }
+    },
     "Auto-trigger pauses while a non-ASCII IME (Japanese, Chinese, Korean, …) is active so it never fights your composition. Switch back to ABC / English to resume." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "非 ASCII の IME（日本語・中国語・韓国語など）が有効な間は自動トリガーが停止し、変換と競合しません。ABC / 英字入力に戻すと再開します。"
+            "value" : "非ASCIIのIME（日本語・中国語・韓国語など）が有効な間は自動トリガーが停止し、変換と競合しません。ABC/英字入力に戻すと再開します。"
+          }
+        }
+      }
+    },
+    "Backend" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バックエンド"
+          }
+        }
+      }
+    },
+    "Best for email, chat, and browser fields. Blocks newlines and code fences." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メール、チャット、ブラウザの入力欄向け。改行とコードフェンスを禁止します。"
+          }
+        }
+      }
+    },
+    "Built-in (llama.cpp)" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "内蔵(llama.cpp)"
+          }
+        }
+      }
+    },
+    "CLI, ollama serve" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CLI、ollama serve"
           }
         }
       }
@@ -142,16 +232,6 @@
         }
       }
     },
-    "Changing the language requires relaunching GhostType to take effect." : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "言語の変更を反映するには GhostType を再起動する必要があります。"
-          }
-        }
-      }
-    },
     "Cannot connect. Is the server running?" : {
       "localizations" : {
         "ja" : {
@@ -162,12 +242,22 @@
         }
       }
     },
-    "CLI, ollama serve" : {
+    "Changing the language requires relaunching GhostType to take effect." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "CLI、ollama serve"
+            "value" : "言語の変更を反映するにはGhostTypeを再起動する必要があります。"
+          }
+        }
+      }
+    },
+    "Check for Updates..." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アップデートを確認..."
           }
         }
       }
@@ -192,6 +282,16 @@
         }
       }
     },
+    "Completion Style" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "補完のスタイル"
+          }
+        }
+      }
+    },
     "Connected" : {
       "localizations" : {
         "ja" : {
@@ -212,6 +312,26 @@
         }
       }
     },
+    "Connection: %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接続: %@"
+          }
+        }
+      }
+    },
+    "Constrains the sampler so the model cannot spend tokens on text GhostType would discard. Applies to the built-in backend and to any external llama.cpp server." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GhostTypeが捨てることになる文章にモデルがトークンを使わないよう、サンプラーを制約します。内蔵バックエンドと、外部のllama.cppサーバーで有効です。"
+          }
+        }
+      }
+    },
     "Context" : {
       "localizations" : {
         "ja" : {
@@ -227,7 +347,17 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "コンテキストウィンドウ (文字数)"
+            "value" : "コンテキストウィンドウ(文字数)"
+          }
+        }
+      }
+    },
+    "Could not start the bundled server: %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "内蔵サーバーを起動できませんでした: %@"
           }
         }
       }
@@ -257,7 +387,17 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "GhostType を無効化"
+            "value" : "GhostTypeを無効化"
+          }
+        }
+      }
+    },
+    "Disconnected" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未接続"
           }
         }
       }
@@ -292,12 +432,62 @@
         }
       }
     },
+    "Download" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ダウンロード"
+          }
+        }
+      }
+    },
+    "Download a model and GhostType runs it for you. Nothing else to install." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "モデルをダウンロードすればGhostTypeが動かします。他に入れるものはありません。"
+          }
+        }
+      }
+    },
+    "Download cancelled." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ダウンロードを中止しました。"
+          }
+        }
+      }
+    },
+    "Download failed with HTTP %d. Check your connection and try again." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ダウンロードがHTTP %dで失敗しました。接続を確認してもう一度お試しください。"
+          }
+        }
+      }
+    },
+    "Download was incomplete (%1$@ of %2$@). Try again." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ダウンロードが完了しませんでした(%2$@中%1$@)。もう一度お試しください。"
+          }
+        }
+      }
+    },
     "Enable GhostType" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "GhostType を有効化"
+            "value" : "GhostTypeを有効化"
           }
         }
       }
@@ -322,16 +512,6 @@
         }
       }
     },
-    "Excluded Apps" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "除外アプリ"
-          }
-        }
-      }
-    },
     "Excluded Applications" : {
       "localizations" : {
         "ja" : {
@@ -342,12 +522,42 @@
         }
       }
     },
+    "Excluded Apps" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "除外アプリ"
+          }
+        }
+      }
+    },
+    "External server" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "外部サーバー"
+          }
+        }
+      }
+    },
     "FIM-specialized, high quality" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "FIM 特化、高品質"
+            "value" : "FIM特化、高品質"
+          }
+        }
+      }
+    },
+    "Fastest. Good on older Macs and 8 GB memory." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最速。古いMacやメモリ8GBでも快適。"
           }
         }
       }
@@ -357,7 +567,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "以下の手順に従い、すべてのアプリで GhostType を有効にしてください。"
+            "value" : "以下の手順に従い、すべてのアプリでGhostTypeを有効にしてください。"
           }
         }
       }
@@ -368,6 +578,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "フォントサイズ"
+          }
+        }
+      }
+    },
+    "For code" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コード向け"
+          }
+        }
+      }
+    },
+    "For writing" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文章向け"
+          }
+        }
+      }
+    },
+    "GUI, easy model management" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GUI、簡単なモデル管理"
           }
         }
       }
@@ -402,22 +642,22 @@
         }
       }
     },
-    "GhostType connects to an OpenAI-compatible API server.\nStart your LLM in LM Studio, Ollama, or any compatible app before using." : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GhostType は OpenAI 互換 API サーバーに接続します。\n使用前に LM Studio、Ollama などの対応アプリで LLM を起動してください。"
-          }
-        }
-      }
-    },
     "GhostType Settings" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "GhostType 設定"
+            "value" : "GhostType設定"
+          }
+        }
+      }
+    },
+    "GhostType connects to an OpenAI-compatible API server.\nStart your LLM in LM Studio, Ollama, or any compatible app before using." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GhostTypeはOpenAI互換APIサーバーに接続します。\n使用前にLM Studio、Ollamaなどの対応アプリでLLMを起動してください。"
           }
         }
       }
@@ -427,7 +667,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "これらのアプリでは GhostType は一切動作しません。IDE やターミナルは独自の補完を持つため、既定で除外されています。"
+            "value" : "これらのアプリではGhostTypeは一切動作しません。IDEやターミナルは独自の補完を持つため、既定で除外されています。"
           }
         }
       }
@@ -452,12 +692,22 @@
         }
       }
     },
-    "GUI, easy model management" : {
+    "Highest quality. Wants 16 GB memory or more." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "GUI、簡単なモデル管理"
+            "value" : "品質重視。メモリ16GB以上向け。"
+          }
+        }
+      }
+    },
+    "Idle. Starts on your first keystroke." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "待機中。最初の打鍵で起動します。"
           }
         }
       }
@@ -467,7 +717,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "これらのアプリでは自動トリガーが無効です。手動トリガーのショートカット (%@) で補完を呼び出してください。"
+            "value" : "これらのアプリでは自動トリガーが無効です。手動トリガーのショートカット(%@)で補完を呼び出してください。"
           }
         }
       }
@@ -478,6 +728,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "推論"
+          }
+        }
+      }
+    },
+    "Inference Backend" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "推論バックエンド"
+          }
+        }
+      }
+    },
+    "Inference error: %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "推論エラー: %@"
           }
         }
       }
@@ -497,7 +767,17 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "無効な URL"
+            "value" : "無効なURL"
+          }
+        }
+      }
+    },
+    "Invalid response format from server" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サーバーの応答形式が不正です"
           }
         }
       }
@@ -512,6 +792,26 @@
         }
       }
     },
+    "LLM Server" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LLMサーバー"
+          }
+        }
+      }
+    },
+    "LLM server is not running at %@. Start LM Studio, Ollama, or another OpenAI-compatible server." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LLMサーバーが%@で起動していません。LM Studio、Ollama、または他のOpenAI互換サーバーを起動してください。"
+          }
+        }
+      }
+    },
     "Language" : {
       "localizations" : {
         "ja" : {
@@ -522,22 +822,22 @@
         }
       }
     },
-    "LLM Server" : {
+    "Lightweight. For code and technical writing." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "LLM サーバー"
+            "value" : "軽量。コードや技術文書向け。"
           }
         }
       }
     },
-    "Manual trigger" : {
+    "Loading the model..." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "手動トリガー"
+            "value" : "モデルを読み込み中..."
           }
         }
       }
@@ -548,6 +848,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "手動トリガーのみ"
+          }
+        }
+      }
+    },
+    "Manual trigger" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "手動トリガー"
           }
         }
       }
@@ -577,7 +887,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "モデル (任意、空欄なら自動検出)"
+            "value" : "モデル(任意、空欄なら自動検出)"
           }
         }
       }
@@ -587,17 +897,37 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "モデル名 (任意、空欄なら自動検出)"
+            "value" : "モデル名(任意、空欄なら自動検出)"
           }
         }
       }
     },
-    "ms" : {
+    "Model file not found at %@. Download it again from Settings." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ms"
+            "value" : "モデルファイルが%@に見つかりません。設定から再度ダウンロードしてください。"
+          }
+        }
+      }
+    },
+    "Models are stored in ~/Library/Application Support/GhostType/models and never leave your Mac." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "モデルは~/Library/Application Support/GhostType/modelsに保存され、Macの外に出ることはありません。"
+          }
+        }
+      }
+    },
+    "Network error: %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ネットワークエラー: %@"
           }
         }
       }
@@ -612,6 +942,16 @@
         }
       }
     },
+    "No HTTP response" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HTTP応答がありません"
+          }
+        }
+      }
+    },
     "No apps added" : {
       "localizations" : {
         "ja" : {
@@ -622,12 +962,22 @@
         }
       }
     },
+    "No grammar. Use if a model behaves oddly under constraints." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文法制約なし。制約下でモデルの挙動がおかしいときに使います。"
+          }
+        }
+      }
+    },
     "Observes your typing system-wide via CGEventTap." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "CGEventTap でシステム全体のキー入力を監視します。"
+            "value" : "CGEventTapでシステム全体のキー入力を監視します。"
           }
         }
       }
@@ -652,6 +1002,36 @@
         }
       }
     },
+    "Other sizes are in the Model tab." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "他のサイズはモデルタブにあります。"
+          }
+        }
+      }
+    },
+    "Paused" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一時停止中"
+          }
+        }
+      }
+    },
+    "Press Tab to accept" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabで受け入れ"
+          }
+        }
+      }
+    },
     "Press a key..." : {
       "localizations" : {
         "ja" : {
@@ -662,22 +1042,22 @@
         }
       }
     },
-    "Press Tab to accept" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tab で受け入れ"
-          }
-        }
-      }
-    },
     "Quit GhostType" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "GhostType を終了"
+            "value" : "GhostTypeを終了"
+          }
+        }
+      }
+    },
+    "Reads surrounding text and inserts accepted completions." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "周辺テキストの読み取りと、受け入れた補完の挿入に使用します。"
           }
         }
       }
@@ -692,12 +1072,22 @@
         }
       }
     },
-    "Reads surrounding text and inserts accepted completions." : {
+    "Recommended Models (FIM-capable)" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "周辺テキストの読み取りと、受け入れた補完の挿入に使用します。"
+            "value" : "推奨モデル(FIM対応)"
+          }
+        }
+      }
+    },
+    "Recommended. Best latency-to-quality balance on Apple Silicon." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "推奨。Apple Siliconで速度と品質のバランスが最良。"
           }
         }
       }
@@ -722,12 +1112,12 @@
         }
       }
     },
-    "Recommended Models (FIM-capable)" : {
+    "Remove" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "推奨モデル (FIM 対応)"
+            "value" : "削除"
           }
         }
       }
@@ -737,7 +1127,17 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ を削除"
+            "value" : "%@を削除"
+          }
+        }
+      }
+    },
+    "Repetition Penalty" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "繰り返しペナルティ"
           }
         }
       }
@@ -762,6 +1162,26 @@
         }
       }
     },
+    "Run inference with" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "推論の実行方法"
+          }
+        }
+      }
+    },
+    "Running on %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@で動作中"
+          }
+        }
+      }
+    },
     "Search apps..." : {
       "localizations" : {
         "ja" : {
@@ -782,12 +1202,12 @@
         }
       }
     },
-    "Server: %@" : {
+    "Server" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "サーバー: %@"
+            "value" : "サーバー"
           }
         }
       }
@@ -798,6 +1218,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "サーバーエンドポイント"
+          }
+        }
+      }
+    },
+    "Server at %@ is not responding (model may be loading or the endpoint URL may be wrong)." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@のサーバーが応答しません(モデルがロード中か、エンドポイントURLが間違っている可能性があります)。"
           }
         }
       }
@@ -818,6 +1248,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "サーバーがエラーを返しました"
+          }
+        }
+      }
+    },
+    "Server: %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サーバー: %@"
           }
         }
       }
@@ -852,22 +1292,32 @@
         }
       }
     },
+    "Shape" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "形式"
+          }
+        }
+      }
+    },
+    "Single line" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1行"
+          }
+        }
+      }
+    },
     "Start a local LLM (LM Studio, Ollama, llama.cpp, …) then enter its endpoint here." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ローカル LLM (LM Studio、Ollama、llama.cpp など) を起動し、エンドポイントを入力してください。"
-          }
-        }
-      }
-    },
-    "System Default" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "システム設定に従う"
+            "value" : "ローカルLLM (LM Studio、Ollama、llama.cppなど)を起動し、エンドポイントを入力してください。"
           }
         }
       }
@@ -878,6 +1328,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "状態: %@"
+          }
+        }
+      }
+    },
+    "Stop" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "中止"
+          }
+        }
+      }
+    },
+    "Stronger on code. Weaker on everyday prose." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コードに強く、普段の文章には弱め。"
+          }
+        }
+      }
+    },
+    "System Default" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "システム設定に従う"
           }
         }
       }
@@ -902,6 +1382,26 @@
         }
       }
     },
+    "The bundled llama.cpp server is missing from this build. Reinstall GhostType, or switch to an external server in Settings." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このビルドには内蔵のllama.cppサーバーが含まれていません。GhostTypeを再インストールするか、設定で外部サーバーに切り替えてください。"
+          }
+        }
+      }
+    },
+    "The bundled server did not become ready: %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "内蔵サーバーが応答可能になりませんでした: %@"
+          }
+        }
+      }
+    },
     "Thinking..." : {
       "localizations" : {
         "ja" : {
@@ -912,12 +1412,22 @@
         }
       }
     },
+    "This build does not include the llama.cpp binaries. Run scripts/fetch-llama.sh and rebuild, or use an external server." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このビルドにはllama.cppのバイナリが含まれていません。scripts/fetch-llama.shを実行して再ビルドするか、外部サーバーを使ってください。"
+          }
+        }
+      }
+    },
     "Toggle GhostType" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "GhostType を切り替え"
+            "value" : "GhostTypeを切り替え"
           }
         }
       }
@@ -967,7 +1477,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "下に入力して補完を試せます。タイプを止めるとトリガーされ、Tab で受け入れ、Esc で閉じます。"
+            "value" : "下に入力して補完を試せます。タイプを止めるとトリガーされ、Tabで受け入れ、Escで閉じます。"
           }
         }
       }
@@ -992,82 +1502,12 @@
         }
       }
     },
-    "Auto-trigger paused after repeated failures. Use the manual shortcut to retry." : {
+    "Unconstrained" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "連続したエラーのため自動補完を一時停止しました。手動ショートカットで再試行できます。"
-          }
-        }
-      }
-    },
-    "Connection: %@" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "接続: %@"
-          }
-        }
-      }
-    },
-    "Disconnected" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "未接続"
-          }
-        }
-      }
-    },
-    "Inference error: %@" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "推論エラー: %@"
-          }
-        }
-      }
-    },
-    "LLM server is not running at %@. Start LM Studio, Ollama, or another OpenAI-compatible server." : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "LLMサーバーが %@ で起動していません。LM Studio、Ollama、または他のOpenAI互換サーバーを起動してください。"
-          }
-        }
-      }
-    },
-    "Network error: %@" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ネットワークエラー: %@"
-          }
-        }
-      }
-    },
-    "Paused" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "一時停止中"
-          }
-        }
-      }
-    },
-    "Server at %@ is not responding (model may be loading or the endpoint URL may be wrong)." : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ のサーバーが応答しません (モデルがロード中か、エンドポイントURLが間違っている可能性があります)。"
+            "value" : "制約なし"
           }
         }
       }
@@ -1082,12 +1522,82 @@
         }
       }
     },
-    "Check for Updates..." : {
+    "Up to a few lines" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "アップデートを確認..."
+            "value" : "数行まで"
+          }
+        }
+      }
+    },
+    "Use a server you already run: LM Studio, Ollama, llama.cpp, vLLM. No second copy of the weights." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すでに動かしているサーバーを使います。LM Studio、Ollama、llama.cpp、vLLMなど。重みが二重に載りません。"
+          }
+        }
+      }
+    },
+    "could not open a socket to pick a port" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ポート選択用のソケットを開けませんでした"
+          }
+        }
+      }
+    },
+    "could not read back the reserved port" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "確保したポート番号を取得できませんでした"
+          }
+        }
+      }
+    },
+    "could not reserve a loopback port" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ループバックのポートを確保できませんでした"
+          }
+        }
+      }
+    },
+    "ms" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ms"
+          }
+        }
+      }
+    },
+    "server exited with code %d" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サーバーがコード%dで終了しました"
+          }
+        }
+      }
+    },
+    "timed out while loading the model" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "モデルの読み込みがタイムアウトしました"
           }
         }
       }

@@ -17,6 +17,37 @@ enum SettingsTab: String, Hashable {
     case setup, general, model, inference, appearance, excluded
 }
 
+// MARK: - Backend
+
+/// Where inference runs.
+///
+/// Both options end at the same OpenAI-compatible HTTP surface. `.embedded`
+/// means GhostType owns the process; `.external` means the user does. Keeping
+/// them as two sources for one endpoint — rather than two engines — is what
+/// lets someone who already runs LM Studio skip a second copy of the weights.
+enum LLMBackend: String, CaseIterable, Identifiable {
+    case embedded
+    case external
+
+    var id: String { rawValue }
+
+    var displayName: String {
+        switch self {
+        case .embedded: return String(localized: "Built-in (llama.cpp)")
+        case .external: return String(localized: "External server")
+        }
+    }
+
+    var summary: String {
+        switch self {
+        case .embedded:
+            return String(localized: "Download a model and GhostType runs it for you. Nothing else to install.")
+        case .external:
+            return String(localized: "Use a server you already run: LM Studio, Ollama, llama.cpp, vLLM. No second copy of the weights.")
+        }
+    }
+}
+
 // MARK: - Supported UI Languages
 //
 // To add a new language: add a `case` here with its locale code,
@@ -59,11 +90,27 @@ enum ConnectionState: Equatable {
 final class AppSettings: ObservableObject {
     static let shared = AppSettings()
 
-    // LLM Server Settings
+    // Backend Selection
+    @Published var backend: LLMBackend = .embedded {
+        didSet { save() }
+    }
+    /// Which catalog model the embedded backend loads.
+    @Published var embeddedModelID: String = CatalogModel.recommended.id {
+        didSet { save() }
+    }
+
+    // LLM Server Settings (external backend)
     @Published var serverEndpoint: String = "http://127.0.0.1:1234" {
         didSet { save() }
     }
     @Published var modelName: String = "" {
+        didSet { save() }
+    }
+
+    /// How tightly the sampler is constrained. Only takes effect on servers
+    /// that speak llama.cpp's API, which is every embedded run and any external
+    /// `llama-server`.
+    @Published var grammarStyle: CompletionGrammar.Style = .singleLine {
         didSet { save() }
     }
 
@@ -77,7 +124,16 @@ final class AppSettings: ObservableObject {
     @Published var topP: Double = 0.9 {
         didSet { save() }
     }
-    @Published var contextWindow: Int = 512 {
+    @Published var repeatPenalty: Double = 1.1 {
+        didSet { save() }
+    }
+    /// How much text around the cursor is sent, in characters.
+    ///
+    /// 512 was too small to be useful: three sentences into an email the model
+    /// no longer sees how the message started, so it completes from a fragment.
+    /// llama.cpp reuses the cached prefix between keystrokes, so a larger window
+    /// costs far less than its size suggests.
+    @Published var contextWindow: Int = 2048 {
         didSet { save() }
     }
 
@@ -229,12 +285,26 @@ final class AppSettings: ObservableObject {
     }
 
     private func load() {
+        // Existing installs were configured against an external server before
+        // the embedded backend existed. Flipping them to `.embedded` on upgrade
+        // would silently break a working setup and demand a multi-gigabyte
+        // download, so only fresh installs get the zero-setup default.
+        let hasLaunchedBefore = defaults.bool(forKey: "hasLaunchedBefore")
+        let defaultBackend: LLMBackend = hasLaunchedBefore ? .external : .embedded
+        backend = defaults.string(forKey: "backend").flatMap(LLMBackend.init(rawValue:)) ?? defaultBackend
+        embeddedModelID = defaults.string(forKey: "embeddedModelID") ?? CatalogModel.recommended.id
+        grammarStyle = defaults.string(forKey: "grammarStyle").flatMap(CompletionGrammar.Style.init(rawValue:)) ?? .singleLine
         serverEndpoint = defaults.string(forKey: "serverEndpoint") ?? "http://127.0.0.1:1234"
         modelName = defaults.string(forKey: "modelName") ?? ""
         maxTokens = defaults.integer(forKey: "maxTokens").nonZero ?? 64
         temperature = defaults.double(forKey: "temperature").nonZeroDouble ?? 0.2
         topP = defaults.double(forKey: "topP").nonZeroDouble ?? 0.9
-        contextWindow = defaults.integer(forKey: "contextWindow").nonZero ?? 512
+        repeatPenalty = defaults.double(forKey: "repeatPenalty").nonZeroDouble ?? 1.1
+        // Existing installs carry the old 512 default, which is small enough to
+        // be the reason their completions felt off. Lift it once; a user who
+        // deliberately picks another value keeps it.
+        let storedContext = defaults.integer(forKey: "contextWindow").nonZero ?? 2048
+        contextWindow = storedContext == 512 ? 2048 : storedContext
         debounceMs = defaults.integer(forKey: "debounceMs").nonZero ?? 300
         autoTrigger = defaults.object(forKey: "autoTrigger") as? Bool ?? true
         ghostTextOpacity = defaults.double(forKey: "ghostTextOpacity").nonZeroDouble ?? 0.5
@@ -263,11 +333,15 @@ final class AppSettings: ObservableObject {
     }
 
     private func save() {
+        defaults.set(backend.rawValue, forKey: "backend")
+        defaults.set(embeddedModelID, forKey: "embeddedModelID")
+        defaults.set(grammarStyle.rawValue, forKey: "grammarStyle")
         defaults.set(serverEndpoint, forKey: "serverEndpoint")
         defaults.set(modelName, forKey: "modelName")
         defaults.set(maxTokens, forKey: "maxTokens")
         defaults.set(temperature, forKey: "temperature")
         defaults.set(topP, forKey: "topP")
+        defaults.set(repeatPenalty, forKey: "repeatPenalty")
         defaults.set(contextWindow, forKey: "contextWindow")
         defaults.set(debounceMs, forKey: "debounceMs")
         defaults.set(autoTrigger, forKey: "autoTrigger")

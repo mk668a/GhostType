@@ -48,6 +48,46 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
         settings.statusText = String(localized: "Ready")
         settings.markLaunched()
+
+        observeBackendChanges()
+    }
+
+    func applicationWillTerminate(_ notification: Notification) {
+        // The bundled llama.cpp server is a child process holding a multi-GB
+        // model mapped in. Without an explicit stop it outlives the app and
+        // keeps that memory resident until the user finds it in Activity Monitor.
+        BundledLlamaServer.shared.stop()
+    }
+
+    /// Drops the cached client whenever the user points GhostType at a
+    /// different backend or model, so the next keystroke rebuilds against the
+    /// new endpoint instead of hitting a server that is no longer there.
+    private func observeBackendChanges() {
+        // `@Published` replays its current value on subscribe, so each stream
+        // drops its own first element rather than relying on one `dropFirst`
+        // after the merge, which would only swallow one of the three.
+        Publishers.Merge3(
+            settings.$backend.dropFirst().map { _ in () },
+            settings.$embeddedModelID.dropFirst().map { _ in () },
+            settings.$serverEndpoint.dropFirst().map { _ in () }
+        )
+        .receive(on: DispatchQueue.main)
+        .sink { [weak self] in
+            guard let self else { return }
+            // `receive(on: DispatchQueue.main)` above puts this on the main
+            // thread, which is where MainActor lives — the compiler just has no
+            // way to see that through Combine.
+            MainActor.assumeIsolated {
+                self.completionEngine.invalidateClient()
+                // Switching away from the embedded backend, or to a different
+                // model, leaves a server running against weights nobody wants
+                // loaded any more.
+                if self.settings.backend == .external {
+                    BundledLlamaServer.shared.stop()
+                }
+            }
+        }
+        .store(in: &cancellables)
     }
 
     // MARK: - Key Monitor + Completion Controller

@@ -2,251 +2,239 @@
   <img src="../../images/header.png" alt="GhostType" width="600">
 </p>
 
+[English](../../README.md) · 日本語
+
 # GhostType
 
-**macOS 向け AI キーボード補完エンジン**
-
-GhostType は GitHub Copilot 風のゴーストテキスト補完を **macOS のすべてのアプリ** にもたらします。テキストエディタ、ブラウザ、メールクライアントなど、どこでも動作します。ローカル LLM を活用しているため、文脈に応じた補完を提供しながらデータを完全にプライベートに保ちます。
+**Macのあらゆるテキスト欄で、Tabキーひとつで続きが書ける。しかも全部あなたのMacの中で動く。**
 
 <p align="center">
   <img src="https://img.shields.io/badge/platform-macOS%2014%2B-blue" alt="macOS 14+">
   <img src="https://img.shields.io/badge/swift-5.9%2B-orange" alt="Swift 5.9+">
-  <img src="https://img.shields.io/badge/license-PolyForm%20NC%201.0.0-blue" alt="PolyForm Noncommercial 1.0.0">
+  <img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT">
   <img src="https://img.shields.io/badge/privacy-100%25%20local-brightgreen" alt="100% Local">
 </p>
 
-[English README](../../README.md)
+GhostTypeは、クローズドソースのMac用補完アプリ[Cotypist](https://cotypist.app/)の、MITライセンスによる無料の代替です。
 
-## 特長
+## こういう場面のために
 
-- **システム全体での補完** -- macOS の任意のテキストフィールド (Safari、メモ、メールなど) で動作
-- **ゴーストテキスト UI** -- 提案がカーソル付近に半透明のオーバーレイテキストとして表示
-- **完全ローカル** -- すべての推論は端末上で実行。データが Mac の外に出ることは一切ありません
-- **OpenAI 互換サーバーに対応** -- LM Studio、Ollama、llama.cpp、vLLM など
-- **低レイテンシ** -- Apple Silicon に最適化された高速応答
+Gmailで返信を3文ほど書いたところ。この文がどう終わるかは、もう頭の中にある。それでも全部打たないといけない。
 
-## 実際の動作
+エディタはこの問題を何年も前に解決しました。GitHub Copilotが行の続きをグレーで見せてくれて、Tabキーを押すだけ。ところがメールにもSlackにもメモにも、そして実際に一日の大半を費やしているブラウザの入力欄にも、それがありません。
 
-ゴーストテキスト補完は、入力中の場所にそのまま表示されます — あらゆるアプリで。
+## GhostTypeがすること
+
+打つ手を止めると、カーソル位置にグレーの文字が出ます。`Tab`キーを押します。
+
+```
+Before:  Thanks for sending over the draft. I read through it this morning and I think▌
+
+After:   Thanks for sending over the draft. I read through it this morning and I think
+         it's great. I'm going to start working on it today.▌
+                    └─ grey ghost text, Tab to accept, Esc to dismiss
+```
+
+これは同梱の0.5Bモデルが実際に返した補完です。Safari、メモ、メール、Slack、その他どのテキスト欄でも同じように動きます。
 
 <p align="center">
-  <img src="../../images/usecase1.png" alt="Gmail での GhostType" width="600">
+  <img src="../../images/usecase1.png" alt="GhostType in Gmail" width="600">
   <br>
-  <em>Gmail で返信を作成中</em>
+  <em>Gmailで返信を書く</em>
 </p>
 
 <p align="center">
-  <img src="../../images/usecase2.png" alt="X での GhostType" width="600">
+  <img src="../../images/usecase2.png" alt="GhostType on X" width="600">
   <br>
-  <em>X で投稿を作成中</em>
+  <em>Xに投稿を書く</em>
 </p>
+
+## 動かし方は2通り
+
+ローカルAI系のMacアプリの多くがここを外しています。モデルを同梱するので、すでに自分でモデルを動かしている人は、同じ重みがメモリ上に2つ載ることになる。GhostTypeは選ばせます。
+
+| | 内蔵 | 外部サーバー |
+|---|---|---|
+| **準備** | 設定画面でモデルをダウンロードするだけ。他に入れるものなし。 | すでに動かしているサーバーを指定するだけ。 |
+| **実体** | アプリに同梱した`llama-server` | LM Studio、Ollama、llama.cpp、vLLM、LocalAI |
+| **メモリ上のモデル** | GhostTypeが読み込む1つ | 追加ゼロ。すでに載っているものを使う。 |
+| **向いている人** | 「とにかく動いてほしい」 | 「32Bをもう動かしてるからそれを使え」 |
+
+どちらも最終的には同じOpenAI互換のHTTPエンドポイントに行き着くので、2つの別物を貼り合わせたつくりにはなっていません。違うのはサーバープロセスを誰が持つかだけです。
+
+外部サーバーが`llama-server`だった場合、GhostTypeはそれを自動で判別し、内蔵バックエンドと同じ高品質な補完経路を使います。詳しくは[補完の品質](#補完の品質)を参照してください。
 
 ## インストール
 
-### ダウンロード
+[Releases](https://github.com/mk668a/GhostType/releases)から最新の`.dmg`をダウンロードします。
 
-[Releases](https://github.com/mk668a/GhostType/releases) ページから最新の **GhostType-0.3.0.dmg** をダウンロードしてください。
+1. `.dmg`を開く
+2. **GhostType**を**アプリケーション**にドラッグ
+3. 起動して、表示されるセットアップガイドに従う
 
-### インストール手順
-
-1. ダウンロードした `.dmg` ファイルを開く
-2. **GhostType** を **アプリケーション** フォルダにドラッグ
-3. アプリケーション (または Spotlight) から GhostType を起動
-4. 初回起動時に表示されるセットアップガイドに従う
-
-> **注意:** macOS は初回起動時に「開発元を確認できません」と警告することがあります。
-> アプリを右クリックして **開く** を選択するか、**システム設定 > プライバシーとセキュリティ** で **このまま開く** をクリックしてください。
+> **注意:** 初回起動時にmacOSが「開発元を確認できません」と警告します。
+> アプリを右クリックして**開く**を選ぶか、**システム設定 > プライバシーとセキュリティ**で**このまま開く**をクリックしてください。
 
 ## セットアップ
 
-### Step 1: ローカル LLM サーバーを起動
+### 手順1: バックエンドを選ぶ
 
-GhostType は Mac 上で動作するローカル LLM サーバーに接続します。いずれかを選んでください。
+初回起動時にセットアップガイドが開きます。**内蔵**を選んでモデルをダウンロードするか、**外部サーバー**を選んでエンドポイントを入力します。
 
-**[LM Studio](https://lmstudio.ai) (推奨):**
-1. LM Studio をダウンロードしてインストール
-2. モデルを検索してダウンロード (例: `Qwen2.5-Coder-3B`)
-3. 「Start Server」をクリック (`http://127.0.0.1:1234` で起動)
+内蔵モデル:
 
-**[Ollama](https://ollama.com):**
-1. Ollama をダウンロードしてインストール
-2. ターミナルを開いて実行:
-   ```
-   ollama pull qwen2.5-coder:3b
-   ```
-3. Ollama は `http://127.0.0.1:11434` で自動的に起動します
+| モデル | サイズ | 備考 |
+|--------|--------|------|
+| Qwen2.5-Coder 0.5B | 約0.5GB | 最速。メモリ8GBのMacでも快適。 |
+| Qwen2.5-Coder 1.5B | 約1.6GB | 推奨。速度と品質のバランスが最良。 |
+| Qwen2.5-Coder 3B | 約3.1GB | 品質重視。メモリ16GB以上向け。 |
 
-### Step 2: 必要な権限を許可
+モデルは`~/Library/Application Support/GhostType/models`に保存され、Macの外に出ることはありません。
 
-GhostType は以下の両方の権限を必要とします。
+### 手順2: 2つの権限を許可する
 
-- **入力監視**: `NSEvent.addGlobalMonitorForEvents` でキー入力を検出
-- **アクセシビリティ**: AX API で周辺テキストの読み取りと補完の挿入を行う
+GhostTypeには両方が必要です。
 
-以下から GhostType を有効化してください。
+- **入力監視**: 打鍵が止まったことを検知するため
+- **アクセシビリティ**: カーソル周辺の文章を読み、確定した補完を挿入するため
 
-- **システム設定 > プライバシーとセキュリティ > 入力監視**
-- **システム設定 > プライバシーとセキュリティ > アクセシビリティ**
+**システム設定 > プライバシーとセキュリティ**でそれぞれ有効にします。どちらが足りていないかはメニューバーのアイコンが教えてくれます。
 
-> セットアップが完了するまで、メニューバーアイコンに「入力監視を許可」や「アクセシビリティを許可」と表示されることがあります。
+### 手順3: 何か打ってみる
 
-### Step 3: GhostType を設定
+テキストエディットを開いて文を半分だけ書き、少し待ちます。グレーの文字が出たら`Tab`キーです。
 
-1. メニューバーの GhostType アイコンをクリック
-2. **設定** を開く
-3. サーバーエンドポイントを入力 (例: `http://127.0.0.1:1234`)
-4. **接続テスト** をクリックして検証
+## 補完の品質
 
-## 動作の仕組み
+採用したくなる補完と、消したくなる補完を分けるのは、次の2点です。
 
-```
-入力中:    "今日の会議では"
-           (タイプを止める)
-GhostType: "今日の会議では四半期売上目標と製品ロードマップが議論された"
-                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-                          ゴーストテキストが表示 -- Tab で受け入れ
-```
+**Fill-in-the-middle(前後を見た補完)。** 多くの補完ツールはカーソルより前の文章しかモデルに渡しません。モデルは文の続きがすでに存在することを知らないまま書くので、すでにある結びの上にもう一つ結びを書いてしまいます。GhostTypeはllama.cppの`/infill`エンドポイントを使って前後両方を渡すため、補完が文の末尾を重複させず、文の「中」に収まります。
 
-1. GhostType は入力監視経由でキー入力を観測
-2. タイプが止まると、Accessibility API で周辺テキストを読み取る
-3. テキストをローカル LLM サーバーへ送信し補完を取得
-4. 提案がカーソル付近にゴーストテキストとして表示される
-5. **Tab** で受け入れ、**Esc** で却下
+**制約付き生成。** 文の続きを頼まれたモデルは、ときどきコードフェンスで囲んだり、元の文を引用し直したり、3段落の解説を書いたりします。それを後から取り除くのは当て推量です。GhostTypeはGBNF文法を組み立ててサンプラーに渡し、そうしたトークンをそもそも選べなくします。捨てる前提の文章を生成する時間自体が発生しません。
+
+| 設定 | 文法 | 使いどころ |
+|------|------|-----------|
+| 1行 | 改行と行頭のコードフェンスを禁止 | メール、チャット、ブラウザの入力欄(既定) |
+| 数行まで | 最大4行まで許可 | エディタ、メモ、複数行の入力欄 |
+| 制約なし | なし | 制約下でモデルの挙動がおかしいとき |
+
+どちらの機能もllama.cppのAPIを話すサーバーが前提です。内蔵バックエンドでは常に成立し、外部の`llama-server`でも成立します。それ以外のOpenAI互換サーバーに対しては、カーソル位置を印で示すチャット補完に切り替わります。動きはしますが、切れ味は明らかに落ちます。
 
 ## キーボードショートカット
 
-| キー | アクション |
-|-----|-----------|
-| `Tab` | 補完を受け入れ |
-| `Esc` | 補完を閉じる |
-| `Option + \` | 補完を手動でトリガー |
-| `Cmd + Shift + G` | GhostType のオン／オフ切替 |
+| キー | 動作 |
+|------|------|
+| `Tab` | 補完を確定 |
+| `Esc` | 補完を消す |
+| `Cmd + Option + \` | 手動で補完を呼ぶ |
+| `Cmd + Shift + G` | GhostTypeのオン/オフ |
 
-すべてのショートカットは設定画面でカスタマイズ可能です。
+すべて設定画面で変更できます。
 
-## 対応 LLM サーバー
+## アプリごとの対応状況
 
-| アプリ | デフォルトエンドポイント | 備考 |
-|--------|--------------------------|------|
-| **[LM Studio](https://lmstudio.ai)** | `http://127.0.0.1:1234` | GUI、簡単なモデル管理 |
-| **[Ollama](https://ollama.com)** | `http://127.0.0.1:11434` | 軽量、CLI |
-| **llama.cpp** | `http://127.0.0.1:8080` | 上級者向け |
-| **vLLM / LocalAI** | `http://127.0.0.1:8000` | 高スループット |
+| アプリの種類 | 自動補完 | 理由 |
+|--------------|----------|------|
+| テキストエディット、メモ、Pages | 対応 | アクセシビリティAPIに完全対応 |
+| Safari、Chromeの入力欄 | 対応 | 打鍵バッファで代替 |
+| メール、Slack、Discord | 手動のみ | 自動補完がアプリ側の入力処理と競合する |
+| IDE、ターミナル | 無効 | 元から補完機能がある |
 
-### 推奨モデル
+日本語、中国語、韓国語などの入力メソッドが変換中のあいだは自動補完が止まるので、変換の邪魔をすることはありません。
 
-| モデル | サイズ | 得意分野 |
-|--------|--------|----------|
-| Qwen2.5-Coder-3B | 約 2 GB | コード・技術文書 |
-| DeepSeek-Coder-V2-Lite | 約 2 GB | FIM 特化、高品質 |
-| CodeGemma-2B | 約 1.5 GB | 超軽量、低レイテンシ |
+## やらないこと
 
-## 設定
+- クラウド推論をしません。APIキーの入力欄がないのは、キーを入れる先のAPIが存在しないからです。
+- テレメトリも解析も入力ログも取りません。
+- アカウント登録も、サブスクリプションも、利用回数の上限もありません。
+- 文章の書き換え、翻訳、再構成はしません。書き始めた文を最後まで書くだけです。
 
-メニューバーのアイコン > **設定** から以下を設定できます。
-
-- **サーバー** -- エンドポイント URL とモデル名
-- **推論** -- Temperature、最大トークン数、Top P
-- **トリガー** -- 自動/手動トリガー、デバウンス遅延
-- **外観** -- ゴーストテキストの不透明度とフォントサイズ
-- **キーボードショートカット** -- すべてのキーバインドをカスタマイズ
-- **除外アプリ** -- 特定のアプリで無効化 (IDE/ターミナルは既定で除外)
-
-## アプリ互換性
-
-GhostType は macOS のほとんどのアプリで動作します。注意点は以下のとおりです。
-
-| アプリの種類 | 自動トリガー | 備考 |
-|--------------|--------------|------|
-| TextEdit、メモ、Pages | あり | Accessibility API で完全対応 |
-| Safari、Chrome (Web 入力) | あり | キーストロークバッファをフォールバックとして使用 |
-| メール、Slack、Discord | 手動のみ | `Option + \` でトリガー |
-| IDE、ターミナル | 無効 | 独自の補完を備えているため |
-
-## システム要件
+## 動作環境
 
 | | 最低 | 推奨 |
 |--|------|------|
 | **macOS** | 14.0 Sonoma | 15.0 Sequoia |
-| **CPU** | Apple M1 / Intel i7 | Apple M2 Pro+ |
-| **RAM** | 8 GB | 16 GB+ |
-| **ストレージ** | 5 GB (モデル含む) | 10 GB+ |
+| **チップ** | Apple M1 | Apple M2 Pro以上 |
+| **メモリ** | 8GB | 16GB以上 |
+| **ストレージ** | 1GB+モデル分 | 5GB |
 
-## プライバシーとセキュリティ
+## プライバシー
 
-- 通信先は **ローカル LLM サーバーのみ** (`127.0.0.1`)。クラウドもテレメトリもなし
-- 入力ログやデータ収集は一切なし
-- アクセシビリティ権限は初回起動時に要求されます
-- すべての補完はあなたの Mac 上の自前 LLM によって生成されます
+補完はすべてMacの中で生成されます。内蔵バックエンドは`127.0.0.1`上の`llama-server`プロセスと通信し、外部バックエンドは指定したループバックアドレスと通信します。GhostType自身のアップデート確認以外に、ネットワーク通信は発生しません。
 
-## トラブルシューティング
+## うまく動かないとき
 
-**外部アプリで補完が表示されない:**
-1. メニューバーのステータスを確認:
-   - 「アクセシビリティを許可」と表示されている場合は、システム設定 > プライバシーとセキュリティ > アクセシビリティ で GhostType をオンに
-   - 「入力監視を許可」と表示されている場合は、システム設定 > プライバシーとセキュリティ > 入力監視 で GhostType をオンに
-2. 権限を許可すると、GhostType は数秒以内に自動的に再起動します
-3. それでも「準備完了」にならない場合は、GhostType を終了して再起動してみてください
-4. ソースからビルドする場合、ビルドごとにアクセシビリティを再付与する必要があることがあります (コード署名が変わるため)
+**他のアプリで補完が出ない。**
+メニューバーの状態を見てください。「アクセシビリティを許可」または「入力監視を許可」と出ていたら、システム設定の該当ペインでGhostTypeをオンにします。数秒で自動的に再起動します。ソースからビルドするとコード署名が変わるので、ビルドのたびにアクセシビリティの再許可を求められます。
 
-**設定のテストフィールドでは補完が動くのに他のアプリでは動かない:**
-- アクセシビリティ権限が許可されていません。テストフィールドはシステム権限を必要としない直接接続を使いますが、外部アプリでは必要です。
+**設定画面のテスト欄では出るのに、他では出ない。**
+アクセシビリティ権限だけが足りていません。テスト欄はGhostType自身の中にあるため、システム権限を必要としません。
 
-**ステータスが「準備完了」なのにゴーストテキストが表示されない:**
-- LLM サーバーが起動しているか確認してください (設定で接続テスト)
-- 手動トリガーのショートカット (`Option + \`) を試してください
-- 該当アプリが除外アプリリストに含まれていないか確認してください
+**状態は「Ready」なのにグレーの文字が出ない。**
+内蔵ならモデルがダウンロード済みか、外部ならサーバーが動いているかを確認してください。手動ショートカットも試し、除外アプリ一覧に入っていないかも見てください。
 
-## アンインストール
+**内蔵バックエンドが「llama.cppのバイナリがない」と言う。**
+バイナリを含めずにビルドされたものを動かしています。`scripts/fetch-llama.sh`を実行して再ビルドするか、外部サーバーに切り替えてください。
 
-1. メニューバーから GhostType を終了
-2. アプリケーションフォルダから GhostType をゴミ箱へドラッグ
-3. 必要に応じて設定を削除: `~/Library/Preferences/com.ghosttype.app.plist`
-
-## ソースからビルド
+## ソースからビルドする
 
 ```bash
 git clone https://github.com/mk668a/GhostType.git
 cd GhostType
-
-# DMG インストーラを作成
-./scripts/create-dmg.sh
-
-# または直接インストール
-./scripts/install.sh
-
-# あるいは Xcode で開く
 open GhostType.xcodeproj
 ```
 
-Xcode Command Line Tools (`xcode-select --install`) が必要です。
+ビルドは初回にllama.cppの固定バージョンのリリースバイナリを取得し、アプリバンドルに配置します。別途の準備は不要です。手動で取得する場合や、Intel向けにビルドする場合は次のとおりです。
 
-## アーキテクチャ
+```bash
+./scripts/fetch-llama.sh                 # host architecture
+LLAMA_ARCH=x64 ./scripts/fetch-llama.sh  # Intel
+GHOSTTYPE_SKIP_LLAMA=1 xcodebuild ...    # skip, external backend only
+```
+
+その他のスクリプト:
+
+```bash
+./scripts/create-dmg.sh   # build the DMG installer
+./scripts/install.sh      # build and install into /Applications
+```
+
+Xcodeとコマンドラインツール(`xcode-select --install`)が必要です。
+
+## 構成
 
 ```
 GhostType/
 ├── App/
-│   ├── GhostTypeApp.swift          # アプリのエントリポイント・設定
-│   ├── AppDelegate.swift           # メニューバー、ライフサイクル、補完フロー
-│   ├── SettingsView.swift          # 環境設定 UI
-│   └── WelcomeView.swift           # 初回起動時のセットアップガイド
+│   ├── GhostTypeApp.swift          # Entry point, AppSettings, backend enum
+│   ├── AppDelegate.swift           # Menu bar, lifecycle, server teardown
+│   ├── SettingsView.swift          # Preferences and setup guide
+│   └── MenuBarView.swift           # Status menu
 ├── Core/
-│   ├── AccessibilityManager.swift  # AX API テキスト読み書き、権限管理
-│   ├── EventTapManager.swift       # NSEvent でのグローバル/ローカルキー監視
-│   └── CompletionEngine.swift      # LLM 補完オーケストレーション
+│   ├── AccessibilityManager.swift  # AX text read/write, permissions
+│   ├── GlobalKeyMonitor.swift      # CGEventTap keystroke monitoring
+│   ├── InputSourceMonitor.swift    # IME state, pauses auto-trigger
+│   ├── CompletionController.swift  # Debounce, ghost text lifecycle
+│   └── CompletionEngine.swift      # Backend selection, circuit breaker
 ├── LLM/
-│   └── LLMProvider.swift           # OpenAI 互換 API クライアント
+│   ├── LLMProvider.swift           # HTTP client, /infill and chat paths
+│   ├── BundledLlamaServer.swift    # Supervises the bundled llama-server
+│   ├── ModelCatalog.swift          # Downloadable models, on-disk layout
+│   ├── ModelDownloader.swift       # Resumable downloads with progress
+│   └── CompletionGrammar.swift     # GBNF construction
 └── UI/
-    ├── OverlayWindow.swift         # ゴーストテキストオーバーレイウィンドウ
-    └── CompletionPopup.swift       # 複数候補ポップアップ
+    ├── OverlayWindow.swift         # Ghost text overlay window
+    └── CompletionPopup.swift       # Multi-suggestion popup
 ```
+
+## クレジット
+
+推論は[llama.cpp](https://github.com/ggml-org/llama.cpp)(MIT)で動いています。同梱モデルは[Qwen2.5-Coder](https://github.com/QwenLM/Qwen2.5-Coder)(Apache-2.0)を[ggml-org](https://huggingface.co/ggml-org)がGGUFに変換したものです。
 
 ## ライセンス
 
-[PolyForm Noncommercial License 1.0.0](../../LICENSE)
-
-GhostType は **ソース公開** ソフトウェアであり、OSI の定義に基づくオープンソースではありません。個人利用、教育、研究、非商用組織での利用は無償で許可されています。**商用利用はこのライセンスでは許可されていません** — 商用ライセンスが必要な場合はメンテナにお問い合わせください。
+[MIT](../../LICENSE)。使うのも、フォークするのも、商用で売るのも自由です。
 
 ---
 
-**GhostType** -- *タイプを減らし、考える時間を増やそう。*
+**GhostType** *Type less. Think more.*

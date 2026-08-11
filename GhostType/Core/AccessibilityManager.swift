@@ -2,9 +2,11 @@ import AppKit
 import ApplicationServices
 
 struct TextContext {
-    let prefix: String
-    let suffix: String
-    let cursorRect: CGRect
+    var prefix: String
+    /// Mutable so a per-app policy can drop a suffix the field reported but
+    /// cannot actually honour (see `CompletionPolicy.midLineDisabled`).
+    var suffix: String
+    var cursorRect: CGRect
 }
 
 final class AccessibilityManager {
@@ -60,6 +62,65 @@ final class AccessibilityManager {
     /// Bundle identifier of the application that currently owns keyboard focus.
     func focusedAppBundleID() -> String? {
         return NSWorkspace.shared.frontmostApplication?.bundleIdentifier
+    }
+
+    // MARK: - Field Classification
+
+    /// True when the focused element is a password or other secure input.
+    ///
+    /// Native fields use the `AXSecureTextField` role. Browsers keep the
+    /// generic text-field role and move the signal into the subrole, so both
+    /// have to be checked, and the parent too: Chrome sometimes focuses a
+    /// wrapper whose child carries the subrole.
+    func focusedFieldIsSecure() -> Bool {
+        guard let element = focusedElement() else { return false }
+        if isSecure(element) { return true }
+        if let parent = getParent(element), isSecure(parent) { return true }
+        return false
+    }
+
+    private func isSecure(_ element: AXUIElement) -> Bool {
+        // `kAXSecureTextFieldRole` is not exposed to Swift, so the literal is
+        // used directly. It is the documented AX role string and does not move.
+        let secureRole = "AXSecureTextField"
+        if getStringAttribute(element, attribute: kAXRoleAttribute) == secureRole { return true }
+        if getStringAttribute(element, attribute: kAXSubroleAttribute) == secureRole { return true }
+        return false
+    }
+
+    /// Host of the page the focused web field lives on, or nil outside a browser.
+    ///
+    /// This is what makes a rule for Google Docs or a sign-in page work across
+    /// every browser at once. A bundle identifier cannot express it, because
+    /// Safari is Safari whichever page is loaded.
+    func focusedWebDomain() -> String? {
+        guard var element = focusedElement() else { return nil }
+
+        // Walk up to the web area, which is the element that carries AXURL.
+        for _ in 0..<12 {
+            if getStringAttribute(element, attribute: kAXRoleAttribute) == "AXWebArea" {
+                var value: AnyObject?
+                guard AXUIElementCopyAttributeValue(element, kAXURLAttribute as CFString, &value) == .success,
+                      let url = value as? NSURL else { return nil }
+                return url.host
+            }
+            guard let parent = getParent(element) else { return nil }
+            element = parent
+        }
+        return nil
+    }
+
+    private func focusedElement() -> AXUIElement? {
+        guard let app = frontmostApplicationElement() else { return nil }
+        var focused: AnyObject?
+        guard AXUIElementCopyAttributeValue(app, kAXFocusedUIElementAttribute as CFString, &focused) == .success,
+              let element = focused else { return nil }
+        return (element as! AXUIElement)
+    }
+
+    private func frontmostApplicationElement() -> AXUIElement? {
+        guard let pid = NSWorkspace.shared.frontmostApplication?.processIdentifier else { return nil }
+        return AXUIElementCreateApplication(pid)
     }
 
     // MARK: - Text Context Retrieval

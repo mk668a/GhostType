@@ -2,7 +2,16 @@
 set -e
 
 APP_NAME="GhostType"
-VERSION="0.3.1"
+VERSION="1.0.0"
+
+# Signing and notarization are opt-in through the environment, so a contributor
+# without an Apple Developer account still gets a working (unsigned) DMG and the
+# release path is one `export` away rather than a separate script to remember.
+#
+#   export GHOSTTYPE_SIGN_IDENTITY="Developer ID Application: Name (TEAMID)"
+#   export GHOSTTYPE_NOTARY_PROFILE="GhostType"   # xcrun notarytool store-credentials
+SIGN_IDENTITY="${GHOSTTYPE_SIGN_IDENTITY:-}"
+NOTARY_PROFILE="${GHOSTTYPE_NOTARY_PROFILE:-}"
 DMG_NAME="${APP_NAME}-${VERSION}.dmg"
 BUILD_DIR="$(mktemp -d)/build"
 STAGING_DIR="$(mktemp -d)/dmg-staging"
@@ -41,6 +50,19 @@ if [ ! -d "$APP_PATH" ]; then
 fi
 echo "  Build succeeded."
 
+# Sign the app before it goes into the DMG. Xcode already signed the nested
+# llama.cpp binaries during the build phase; this seals the bundle around them.
+if [ -n "$SIGN_IDENTITY" ]; then
+    echo "  Signing app with: ${SIGN_IDENTITY}"
+    codesign --force --options runtime --timestamp \
+        --entitlements "${PROJECT_DIR}/${APP_NAME}/${APP_NAME}.entitlements" \
+        --sign "$SIGN_IDENTITY" "$APP_PATH"
+    codesign --verify --strict --verbose=2 "$APP_PATH"
+else
+    echo "  GHOSTTYPE_SIGN_IDENTITY unset: shipping an unsigned app."
+    echo "  Users will see the 'unidentified developer' warning on first launch."
+fi
+
 # Stage DMG contents
 echo "[2/5] Preparing DMG contents..."
 mkdir -p "$STAGING_DIR"
@@ -72,6 +94,32 @@ hdiutil convert \
     -quiet
 
 rm -f "$TEMP_DMG"
+
+# Sign, notarize, and staple the DMG.
+#
+# Stapling matters as much as notarizing: without the attached ticket, Gatekeeper
+# has to reach Apple to verify, so a user opening the app offline still gets
+# blocked. Sparkle delivers updates as DMGs through this same script, so skipping
+# this step would break every auto-update, not just the first install.
+if [ -n "$SIGN_IDENTITY" ]; then
+    echo "  Signing DMG..."
+    codesign --force --timestamp --sign "$SIGN_IDENTITY" "${OUTPUT_DIR}/${DMG_NAME}"
+fi
+
+if [ -n "$NOTARY_PROFILE" ]; then
+    echo "  Notarizing (this takes a few minutes)..."
+    if ! xcrun notarytool submit "${OUTPUT_DIR}/${DMG_NAME}" \
+        --keychain-profile "$NOTARY_PROFILE" --wait; then
+        echo "Error: notarization failed."
+        echo "  Inspect it with: xcrun notarytool log <submission-id> --keychain-profile ${NOTARY_PROFILE}"
+        exit 1
+    fi
+    xcrun stapler staple "${OUTPUT_DIR}/${DMG_NAME}"
+    xcrun stapler validate "${OUTPUT_DIR}/${DMG_NAME}"
+    spctl -a -t open --context context:primary-signature -v "${OUTPUT_DIR}/${DMG_NAME}"
+else
+    echo "  GHOSTTYPE_NOTARY_PROFILE unset: skipping notarization."
+fi
 
 # Cleanup
 echo "[4/5] Cleaning up build tree..."

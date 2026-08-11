@@ -106,6 +106,16 @@ final class CompletionController {
     }
 
     private func appendToBuffer(_ str: String) {
+        // Cheap front line, run on every keystroke: a bundle-identifier lookup
+        // only. The full policy check walks the AX tree, which is too expensive
+        // per keypress, so it runs at trigger time and wipes the buffer there.
+        // This keeps a password manager's characters from ever landing in it.
+        if let bundleID = AccessibilityManager.shared.focusedAppBundleID(),
+           AppCompatibility.credentialAppBundleIDs.contains(bundleID) {
+            textBuffer = ""
+            return
+        }
+
         textBuffer.append(str)
         if textBuffer.count > maxBufferSize {
             textBuffer = String(textBuffer.dropFirst(textBuffer.count - maxBufferSize))
@@ -143,8 +153,23 @@ final class CompletionController {
         if let bundleID = bundleID, settings.isExcluded(bundleID) { return }
         if !isManual, let bundleID = bundleID, settings.isManualOnly(bundleID) { return }
 
-        let context = resolveContext()
-        guard let context = context else { return }
+        // The non-negotiable floor, checked before anything reads the field.
+        // A manual trigger does not override it: the point is that a password
+        // never reaches the model or the keystroke buffer, not that it is
+        // inconvenient to complete one.
+        let policy = AppCompatibility.policy(
+            bundleID: bundleID,
+            domain: AccessibilityManager.shared.focusedWebDomain(),
+            focusedFieldIsSecure: AccessibilityManager.shared.focusedFieldIsSecure()
+        )
+        if policy.secure { textBuffer = "" }
+        if policy.completionsDisabled { return }
+        if policy.manualOnly, !isManual { return }
+
+        var context = resolveContext()
+        guard context != nil else { return }
+        if policy.midLineDisabled { context?.suffix = "" }
+        guard let context else { return }
         guard !context.prefix.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
 
         let label = bundleID ?? "unknown"
@@ -162,12 +187,12 @@ final class CompletionController {
                 guard let self = self else { return }
                 switch result {
                 case .success(let text):
-                    let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-                    guard !trimmed.isEmpty else {
+                    let completion = Self.normalize(text, following: context.prefix)
+                    guard !completion.isEmpty else {
                         self.settings.statusText = String(localized: "Ready")
                         return
                     }
-                    self.show(trimmed, cursorRect: context.cursorRect)
+                    self.show(completion, cursorRect: context.cursorRect)
                     self.settings.statusText = String(localized: "Ready")
                 case .failure(let error):
                     // Suppressed = breaker open; stay silent so we don't pester
@@ -182,6 +207,26 @@ final class CompletionController {
                 }
             }
         }
+    }
+
+    /// Trims a completion without destroying the space that joins it to what
+    /// the user already typed.
+    ///
+    /// A fill-in-the-middle model emits that space itself — the completion for
+    /// "Hello" is " world" — so blanket-trimming the leading whitespace is what
+    /// produced "Helloworld". The space is only dropped when the prefix already
+    /// ends in one, which is the case that would otherwise double it up.
+    private static func normalize(_ text: String, following prefix: String) -> String {
+        var result = text
+        while let last = result.last, last == " " || last == "\n" || last == "\t" {
+            result.removeLast()
+        }
+        if let lastPrefixCharacter = prefix.last, lastPrefixCharacter.isWhitespace {
+            while let first = result.first, first == " " || first == "\t" {
+                result.removeFirst()
+            }
+        }
+        return result
     }
 
     private func resolveContext() -> TextContext? {

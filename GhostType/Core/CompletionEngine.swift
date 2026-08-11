@@ -34,24 +34,16 @@ final class CompletionEngine {
             return
         }
 
-        let client = getClient()
-
-        let request = FIMRequest(
-            prefix: prefix,
-            suffix: suffix,
-            maxTokens: settings.maxTokens,
-            temperature: settings.temperature,
-            topP: settings.topP,
-            stopTokens: ["\n\n", "<|fim_pad|>", "<|endoftext|>"]
-        )
-
         currentTask = Task {
             do {
+                let client = try await self.resolveClient()
+                let request = await self.buildRequest(prefix: prefix, suffix: suffix)
                 let result = try await client.complete(request: request)
                 guard !Task.isCancelled else { return }
-                let trimmed = result.trimmingCharacters(in: .whitespacesAndNewlines)
                 await self.recordSuccess()
-                completion(.success(trimmed))
+                completion(.success(result))
+            } catch is CancellationError {
+                return
             } catch {
                 guard !Task.isCancelled else { return }
                 await self.recordFailure(error)
@@ -65,6 +57,27 @@ final class CompletionEngine {
         currentTask = nil
     }
 
+    @MainActor
+    private func buildRequest(prefix: String, suffix: String) -> FIMRequest {
+        let style = CompletionGrammar.style(
+            preferred: settings.grammarStyle,
+            fieldIsMultiline: prefix.contains("\n") || suffix.contains("\n")
+        )
+        return FIMRequest(
+            prefix: prefix,
+            suffix: suffix,
+            maxTokens: settings.maxTokens,
+            temperature: settings.temperature,
+            topP: settings.topP,
+            repeatPenalty: settings.repeatPenalty,
+            // The FIM specials are listed explicitly because a base model that
+            // has them will happily emit one mid-completion when it decides the
+            // span is done, and llama.cpp only treats some of them as EOG.
+            stopTokens: ["\n\n", "<|fim_pad|>", "<|endoftext|>", "<|fim_prefix|>", "<|fim_suffix|>", "<|fim_middle|>", "<|file_sep|>", "<|repo_name|>"],
+            grammar: CompletionGrammar.gbnf(for: style)
+        )
+    }
+
     /// User-driven reachability probe for Settings' "Test Connection". Updates
     /// `settings.connectionState` so the menu bar stays in sync with what the
     /// Settings panel just showed the user. Intentionally does not feed the
@@ -73,8 +86,8 @@ final class CompletionEngine {
     /// "Paused" state clears once the user proves the endpoint is healthy.
     @MainActor
     func probe() async -> Result<[String], Error> {
-        let client = getClient()
         do {
+            let client = try await resolveClient()
             let models = try await client.probe()
             consecutiveFailures = 0
             suppressUntil = nil
@@ -90,15 +103,41 @@ final class CompletionEngine {
         }
     }
 
-    private func getClient() -> LLMClient {
-        let endpoint = settings.serverEndpoint
-        let model = settings.modelName
+    // MARK: - Backend resolution
 
+    /// Returns a client pointed at whichever backend the user selected,
+    /// starting the bundled server first if that is the one in play.
+    ///
+    /// Both branches produce the same `LLMClient`, which is the point: the
+    /// embedded backend is a process we supervise, not a second inference path
+    /// to keep in sync with the external one.
+    @MainActor
+    private func resolveClient() async throws -> LLMClient {
+        switch settings.backend {
+        case .embedded:
+            guard BundledLlamaServer.isAvailable else { throw EmbeddedServerError.binaryMissing }
+            let model = CatalogModel.model(withID: settings.embeddedModelID) ?? CatalogModel.recommended
+            let modelPath = ModelStore.localURL(for: model)
+            guard ModelStore.isInstalled(model) else { throw EmbeddedServerError.modelMissing(modelPath) }
+
+            let endpoint = try await BundledLlamaServer.shared.ensureRunning(
+                modelPath: modelPath,
+                contextSize: settings.contextWindow
+            )
+            return client(endpoint: endpoint, model: model.id, flavor: .llamaCpp)
+
+        case .external:
+            return client(endpoint: settings.serverEndpoint, model: settings.modelName, flavor: nil)
+        }
+    }
+
+    @MainActor
+    private func client(endpoint: String, model: String, flavor: ServerFlavor?) -> LLMClient {
         if let existing = client, endpoint == lastEndpoint, model == lastModel {
             return existing
         }
 
-        let newClient = LLMClient(endpoint: endpoint, model: model)
+        let newClient = LLMClient(endpoint: endpoint, model: model, knownFlavor: flavor)
         client = newClient
         lastEndpoint = endpoint
         lastModel = model
@@ -106,6 +145,17 @@ final class CompletionEngine {
         // requests against an endpoint we have not actually tried yet.
         resetBreaker()
         return newClient
+    }
+
+    /// Drops the cached client so the next completion rebuilds it. Called when
+    /// the user switches backends or picks a different model, both of which
+    /// change the endpoint out from under us.
+    @MainActor
+    func invalidateClient() {
+        client = nil
+        lastEndpoint = ""
+        lastModel = ""
+        resetBreaker()
     }
 
     private func resetBreaker() {
@@ -122,6 +172,14 @@ final class CompletionEngine {
 
     @MainActor
     private func recordFailure(_ error: Error) {
+        // A missing binary or an undownloaded model is a setup problem, not a
+        // flaky endpoint. Surfacing it immediately (instead of after three
+        // strikes) is what points the user at Settings.
+        if error is EmbeddedServerError {
+            settings.connectionState = .unreachable
+            return
+        }
+
         // Only network-class failures count toward the breaker. An inferenceError
         // means the server is alive but rejected the request (bad model name,
         // unsupported parameter, etc.) — suppressing auto-trigger would just hide

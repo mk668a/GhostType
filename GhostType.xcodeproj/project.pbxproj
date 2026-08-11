@@ -15,7 +15,12 @@
 		A10000006 /* CompletionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000006 /* CompletionEngine.swift */; };
 		A10000020 /* InputSourceMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000020 /* InputSourceMonitor.swift */; };
 		A10000021 /* CompletionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000021 /* CompletionController.swift */; };
+		A10000044 /* AppCompatibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000044 /* AppCompatibility.swift */; };
 		A10000007 /* LLMProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000007 /* LLMProvider.swift */; };
+		A10000040 /* BundledLlamaServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000040 /* BundledLlamaServer.swift */; };
+		A10000041 /* ModelCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000041 /* ModelCatalog.swift */; };
+		A10000042 /* ModelDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000042 /* ModelDownloader.swift */; };
+		A10000043 /* CompletionGrammar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000043 /* CompletionGrammar.swift */; };
 		A10000011 /* OverlayWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000011 /* OverlayWindow.swift */; };
 		A10000012 /* CompletionPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000012 /* CompletionPopup.swift */; };
 		A10000013 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20000013 /* Assets.xcassets */; };
@@ -34,7 +39,12 @@
 		A20000006 /* CompletionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletionEngine.swift; sourceTree = "<group>"; };
 		A20000020 /* InputSourceMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputSourceMonitor.swift; sourceTree = "<group>"; };
 		A20000021 /* CompletionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletionController.swift; sourceTree = "<group>"; };
+		A20000044 /* AppCompatibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCompatibility.swift; sourceTree = "<group>"; };
 		A20000007 /* LLMProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLMProvider.swift; sourceTree = "<group>"; };
+		A20000040 /* BundledLlamaServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundledLlamaServer.swift; sourceTree = "<group>"; };
+		A20000041 /* ModelCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelCatalog.swift; sourceTree = "<group>"; };
+		A20000042 /* ModelDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDownloader.swift; sourceTree = "<group>"; };
+		A20000043 /* CompletionGrammar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletionGrammar.swift; sourceTree = "<group>"; };
 		A20000011 /* OverlayWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayWindow.swift; sourceTree = "<group>"; };
 		A20000012 /* CompletionPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletionPopup.swift; sourceTree = "<group>"; };
 		A20000013 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -99,6 +109,7 @@
 				A20000006 /* CompletionEngine.swift */,
 				A20000020 /* InputSourceMonitor.swift */,
 				A20000021 /* CompletionController.swift */,
+				A20000044 /* AppCompatibility.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -107,6 +118,10 @@
 			isa = PBXGroup;
 			children = (
 				A20000007 /* LLMProvider.swift */,
+				A20000040 /* BundledLlamaServer.swift */,
+				A20000041 /* ModelCatalog.swift */,
+				A20000042 /* ModelDownloader.swift */,
+				A20000043 /* CompletionGrammar.swift */,
 			);
 			path = LLM;
 			sourceTree = "<group>";
@@ -148,6 +163,7 @@
 				A60000001 /* Sources */,
 				A30000001 /* Frameworks */,
 				A60000002 /* Resources */,
+				A60000003 /* Embed llama.cpp */,
 			);
 			buildRules = (
 			);
@@ -211,6 +227,24 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		A60000003 /* Embed llama.cpp */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed llama.cpp";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"$SRCROOT/scripts/embed-llama.sh\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		A60000001 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -224,7 +258,12 @@
 				A10000006 /* CompletionEngine.swift in Sources */,
 				A10000020 /* InputSourceMonitor.swift in Sources */,
 				A10000021 /* CompletionController.swift in Sources */,
+				A10000044 /* AppCompatibility.swift in Sources */,
 				A10000007 /* LLMProvider.swift in Sources */,
+				A10000040 /* BundledLlamaServer.swift in Sources */,
+				A10000041 /* ModelCatalog.swift in Sources */,
+				A10000042 /* ModelDownloader.swift in Sources */,
+				A10000043 /* CompletionGrammar.swift in Sources */,
 				A10000011 /* OverlayWindow.swift in Sources */,
 				A10000012 /* CompletionPopup.swift in Sources */,
 				A10000015 /* MenuBarView.swift in Sources */,
@@ -267,7 +306,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -319,7 +358,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -339,9 +378,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = GhostType/GhostType.entitlements;
+				ENABLE_HARDENED_RUNTIME = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEAD_CODE_STRIPPING = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = GhostType/Info.plist;
@@ -349,7 +389,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 0.3.1;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ghosttype.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -362,9 +402,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = GhostType/GhostType.entitlements;
+				ENABLE_HARDENED_RUNTIME = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEAD_CODE_STRIPPING = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = GhostType/Info.plist;
@@ -372,7 +413,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 0.3.1;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ghosttype.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

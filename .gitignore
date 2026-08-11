@@ -39,3 +39,5 @@ GhostType/Resources/Models/*.bin
 # Claude
 .claude
 CLAUDE.md
+# Vendored llama.cpp binaries (fetched by scripts/fetch-llama.sh)
+vendor/

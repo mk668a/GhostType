@@ -2,32 +2,40 @@
   <img src="images/header.png" alt="GhostType" width="600">
 </p>
 
-> 🇯🇵 [日本語版 README はこちら](docs/i18n/README.ja.md)
+English · [日本語](docs/i18n/README.ja.md)
 
 # GhostType
 
-**AI-powered keyboard completion engine for macOS**
-
-GhostType brings GitHub Copilot-style ghost text completions to **every app on macOS** -- text editors, browsers, email clients, and more. Powered by local LLMs, it provides context-aware completions while keeping your data completely private.
+**Tab-to-complete autocomplete for every text field on your Mac, running entirely on your own machine.**
 
 <p align="center">
   <img src="https://img.shields.io/badge/platform-macOS%2014%2B-blue" alt="macOS 14+">
   <img src="https://img.shields.io/badge/swift-5.9%2B-orange" alt="Swift 5.9+">
-  <img src="https://img.shields.io/badge/license-PolyForm%20NC%201.0.0-blue" alt="PolyForm Noncommercial 1.0.0">
+  <img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT">
   <img src="https://img.shields.io/badge/privacy-100%25%20local-brightgreen" alt="100% Local">
 </p>
 
-## Features
+GhostType is a free, MIT-licensed alternative to [Cotypist](https://cotypist.app/), the closed-source Mac autocomplete app.
 
-- **System-wide completions** -- Works in any macOS text field (Safari, Notes, Mail, etc.)
-- **Ghost text UI** -- Suggestions appear as translucent overlay text at your cursor
-- **100% local** -- All inference runs on-device. No data ever leaves your Mac
-- **Works with any OpenAI-compatible server** -- LM Studio, Ollama, llama.cpp, vLLM, etc.
-- **Low latency** -- Optimized for fast response on Apple Silicon
+## The situation
 
-## In Action
+You are three sentences into a reply in Gmail. You know how the sentence ends. You still have to type all of it.
 
-Ghost text completions appear right where you type — in any app.
+Your editor solved this years ago: GitHub Copilot shows you the rest of the line in grey, and you press Tab. Nothing does that for Mail, Slack, Notes, or the browser text box you actually spend your day in.
+
+## What GhostType does
+
+You pause typing. Grey text appears at your cursor. Press `Tab`.
+
+```
+Before:  Thanks for sending over the draft. I read through it this morning and I think▌
+
+After:   Thanks for sending over the draft. I read through it this morning and I think
+         it's great. I'm going to start working on it today.▌
+                    └─ grey ghost text, Tab to accept, Esc to dismiss
+```
+
+That is a real completion from the bundled 0.5B model. It works the same way in Safari, Notes, Mail, Slack, and any other macOS text field.
 
 <p align="center">
   <img src="images/usecase1.png" alt="GhostType in Gmail" width="600">
@@ -41,212 +49,192 @@ Ghost text completions appear right where you type — in any app.
   <em>Composing a post on X</em>
 </p>
 
+## Two ways to run it
+
+This is the part most local-AI Mac apps get wrong. They bundle a model, and if you already run one, you now have two copies of the same weights sitting in memory. GhostType lets you pick.
+
+| | Built-in | External server |
+|---|---|---|
+| **Setup** | Download a model in Settings. Nothing else to install. | Point GhostType at a server you already run. |
+| **Runs** | `llama-server`, bundled inside the app | LM Studio, Ollama, llama.cpp, vLLM, LocalAI |
+| **Model in memory** | One copy, loaded by GhostType | Zero extra. Reuses what is already loaded. |
+| **Best for** | "I just want it to work." | "I already have a 32B model running, use that." |
+
+Both paths end at the same OpenAI-compatible HTTP endpoint, so they are not two different products bolted together. The only difference is who owns the server process.
+
+If your external server happens to be `llama-server`, GhostType detects that automatically and uses the same high-quality completion path as the built-in backend. See [Completion quality](#completion-quality) for what that means.
+
 ## Install
 
-### Download
+Download the latest `.dmg` from the [Releases](https://github.com/mk668a/GhostType/releases) page.
 
-Download the latest **GhostType-0.3.0.dmg** from the [Releases](https://github.com/mk668a/GhostType/releases) page.
+1. Open the `.dmg`
+2. Drag **GhostType** into **Applications**
+3. Launch it and follow the setup guide
 
-### Install
-
-1. Open the downloaded `.dmg` file
-2. Drag **GhostType** into the **Applications** folder
-3. Launch GhostType from Applications (or Spotlight)
-4. Follow the setup guide that appears on first launch
-
-> **Note:** macOS may show "unidentified developer" warning on first launch.
-> Right-click the app > **Open** to bypass, or go to **System Settings > Privacy & Security** and click **Open Anyway**.
+> **Note:** macOS shows an "unidentified developer" warning on first launch.
+> Right-click the app and choose **Open**, or go to **System Settings > Privacy & Security** and click **Open Anyway**.
 
 ## Setup
 
-### Step 1: Start a local LLM server
+### Step 1: Choose a backend
 
-GhostType connects to a local LLM server that you run on your Mac. Choose one:
+The setup guide opens on first launch. Pick **Built-in** and download a model, or pick **External server** and enter its endpoint.
 
-**[LM Studio](https://lmstudio.ai) (recommended):**
-1. Download and install LM Studio
-2. Search and download a model (e.g., `Qwen2.5-Coder-3B`)
-3. Click "Start Server" (runs at `http://127.0.0.1:1234`)
+Built-in models:
 
-**[Ollama](https://ollama.com):**
-1. Download and install Ollama
-2. Open Terminal and run:
-   ```
-   ollama pull qwen2.5-coder:3b
-   ```
-3. Ollama runs automatically at `http://127.0.0.1:11434`
+| Model | Size | Notes |
+|-------|------|-------|
+| Qwen2.5-Coder 0.5B | ~0.5 GB | Fastest. Fine on 8 GB Macs. |
+| Qwen2.5-Coder 1.5B | ~1.6 GB | Recommended. Best latency-to-quality balance. |
+| Qwen2.5-Coder 3B | ~3.1 GB | Highest quality. Wants 16 GB or more. |
 
-### Step 2: Grant required permissions
+Models download to `~/Library/Application Support/GhostType/models` and never leave your Mac.
 
-GhostType needs both permissions:
+### Step 2: Grant two permissions
 
-- **Input Monitoring**: detect keystrokes via `NSEvent.addGlobalMonitorForEvents`
-- **Accessibility**: read surrounding text and insert accepted completions via AX APIs
+GhostType needs both:
 
-Enable GhostType in:
+- **Input Monitoring** to notice that you paused typing
+- **Accessibility** to read the text around your cursor and insert what you accept
 
-- **System Settings > Privacy & Security > Input Monitoring**
-- **System Settings > Privacy & Security > Accessibility**
+Enable GhostType under **System Settings > Privacy & Security** for each. The menu bar icon tells you which one is still missing.
 
-> The menu bar icon may show "Grant Input Monitoring" or "Grant Accessibility" until setup is complete.
+### Step 3: Type something
 
-### Step 3: Configure GhostType
+Open TextEdit, write half a sentence, and wait. Grey text appears. Press `Tab`.
 
-1. Click the GhostType icon in the menu bar
-2. Open **Settings**
-3. Enter the server endpoint (e.g., `http://127.0.0.1:1234`)
-4. Click **Test Connection** to verify
+## Completion quality
 
-## How It Works
+Two things make the difference between a completion you accept and one you delete.
 
-```
-You type:  "The meeting covered "
-           (pause)
-GhostType: "The meeting covered quarterly sales targets and the product roadmap"
-                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-                                 Ghost text appears -- press Tab to accept
-```
+**Fill-in-the-middle.** Most autocomplete tools send the model only the text before your cursor. That model has no idea a sentence already continues after you, so it writes a second ending on top of the one you have. GhostType sends the text on both sides using llama.cpp's `/infill` endpoint, so a completion lands *inside* your sentence instead of duplicating its tail.
 
-1. GhostType monitors your keystrokes via Input Monitoring
-2. When you pause typing, it reads the surrounding text via Accessibility API
-3. The text is sent to your local LLM server for completion
-4. The suggestion appears as ghost text near your cursor
-5. Press **Tab** to accept or **Esc** to dismiss
+**Constrained generation.** A model asked to complete a sentence will sometimes answer with a code fence, a quoted restatement, or three paragraphs of explanation. Cleaning that up afterwards is guesswork. Instead, GhostType compiles a GBNF grammar and hands it to the sampler, which makes those tokens unreachable in the first place. The model never spends time generating text that was going to be thrown away.
 
-## Keyboard Shortcuts
+| Setting | Grammar | Use when |
+|---------|---------|----------|
+| Single line | Blocks newlines and leading code fences | Email, chat, browser fields (default) |
+| Up to a few lines | Allows up to 4 lines | Editors, notes, multi-line boxes |
+| Unconstrained | None | A model misbehaves under constraints |
+
+Both features need a server that speaks llama.cpp's API. That is always true for the built-in backend, and true for an external `llama-server`. Against a plain OpenAI-compatible server, GhostType falls back to chat completions with a cursor marker, which still works but is noticeably blunter.
+
+## Keyboard shortcuts
 
 | Key | Action |
 |-----|--------|
 | `Tab` | Accept completion |
 | `Esc` | Dismiss completion |
-| `Option + \` | Manually trigger completion |
-| `Cmd + Shift + G` | Toggle GhostType on/off |
+| `Cmd + Option + \` | Manually trigger a completion |
+| `Cmd + Shift + G` | Toggle GhostType on and off |
 
 All shortcuts are customizable in Settings.
 
-## Compatible LLM Servers
+## App compatibility
 
-| App | Default Endpoint | Notes |
-|-----|-----------------|-------|
-| **[LM Studio](https://lmstudio.ai)** | `http://127.0.0.1:1234` | GUI, easy model management |
-| **[Ollama](https://ollama.com)** | `http://127.0.0.1:11434` | Lightweight, CLI |
-| **llama.cpp** | `http://127.0.0.1:8080` | Advanced users |
-| **vLLM / LocalAI** | `http://127.0.0.1:8000` | High throughput |
+| App type | Auto-trigger | Why |
+|----------|-------------|-----|
+| TextEdit, Notes, Pages | Yes | Full Accessibility API support |
+| Safari, Chrome web inputs | Yes | Falls back to the keystroke buffer |
+| Mail, Slack, Discord | Manual only | Auto-trigger fights their own input handling |
+| IDEs, terminals | Disabled | They already have completions |
 
-### Recommended Models
+Auto-trigger also pauses while a non-ASCII input method (Japanese, Chinese, Korean) is composing, so it never interferes mid-conversion.
 
-| Model | Size | Strengths |
-|-------|------|-----------|
-| Qwen2.5-Coder-3B | ~2 GB | Code & technical writing |
-| DeepSeek-Coder-V2-Lite | ~2 GB | FIM-specialized, high quality |
-| CodeGemma-2B | ~1.5 GB | Ultra-lightweight, low latency |
+## What it does not do
 
-## Settings
+- No cloud inference. There is no API key field, because there is no API to key into.
+- No telemetry, no analytics, no input logging.
+- No account, no subscription, no usage limit.
+- It does not rewrite, translate, or restructure your text. It finishes the sentence you started.
 
-Click the menu bar icon > **Settings** to configure:
-
-- **Server** -- Endpoint URL and model name
-- **Inference** -- Temperature, max tokens, top-p
-- **Trigger** -- Auto/manual trigger, debounce delay
-- **Appearance** -- Ghost text opacity and font size
-- **Keyboard Shortcuts** -- Customize all key bindings
-- **Excluded Apps** -- Disable in specific applications (IDEs/terminals excluded by default)
-
-## App Compatibility
-
-GhostType works with most macOS apps. Some notes:
-
-| App Type | Auto-trigger | Notes |
-|----------|-------------|-------|
-| TextEdit, Notes, Pages | Yes | Full support via Accessibility API |
-| Safari, Chrome (web inputs) | Yes | Uses keystroke buffer as fallback |
-| Mail, Slack, Discord | Manual only | Use `Option + \` to trigger |
-| IDEs, Terminals | Disabled | These have their own completions |
-
-## System Requirements
+## System requirements
 
 | | Minimum | Recommended |
 |--|---------|-------------|
 | **macOS** | 14.0 Sonoma | 15.0 Sequoia |
-| **CPU** | Apple M1 / Intel i7 | Apple M2 Pro+ |
-| **RAM** | 8 GB | 16 GB+ |
-| **Storage** | 5 GB (with model) | 10 GB+ |
+| **Chip** | Apple M1 | Apple M2 Pro or better |
+| **Memory** | 8 GB | 16 GB or more |
+| **Storage** | 1 GB plus the model | 5 GB |
 
-## Privacy & Security
+## Privacy
 
-- Connects **only to your local LLM server** (`127.0.0.1`). No cloud, no telemetry
-- No input logging or data collection
-- Accessibility permission is requested on first launch
-- All completions are generated on your Mac by your own LLM
+Every completion is generated on your Mac. The built-in backend talks to a `llama-server` process on `127.0.0.1`; the external backend talks to whatever loopback address you configured. GhostType makes no other network requests except checking for its own updates.
 
 ## Troubleshooting
 
-**Completions don't appear in external apps:**
-1. Check the menu bar status:
-   - If it shows "Grant Accessibility", open System Settings > Privacy & Security > Accessibility and toggle GhostType ON
-   - If it shows "Grant Input Monitoring", open System Settings > Privacy & Security > Input Monitoring and toggle GhostType ON
-2. After granting permission, GhostType automatically restarts within a few seconds
-3. If status still does not become "Ready", try quitting and relaunching GhostType
-4. When building from source, re-granting Accessibility may be needed after each build (code signature changes)
+**Completions do not appear in other apps.**
+Check the menu bar status. If it says "Grant Accessibility" or "Grant Input Monitoring", open the matching pane in System Settings and toggle GhostType on. It restarts itself within a few seconds. Building from source changes the code signature, so macOS asks for Accessibility again after each build.
 
-**Completions work in Settings test field but not in other apps:**
-- This means Accessibility permission is not granted. The test field uses a direct connection that doesn't need system permission, but external apps do.
+**They work in the Settings test field but nowhere else.**
+That is Accessibility permission specifically. The test field is inside GhostType, so it needs no system permission.
 
-**No ghost text appears even though status is "Ready":**
-- Make sure your LLM server is running (test connection in Settings)
-- Try the manual trigger shortcut (`Option + \`)
-- Check if the app is in the Excluded Apps list
+**Status says "Ready" but no ghost text appears.**
+Confirm a model is downloaded (built-in) or the server is running (external). Try the manual shortcut. Check whether the app is on the Excluded Apps list.
 
-## Uninstall
+**The built-in backend says the llama.cpp binaries are missing.**
+You are running a build made without them. Run `scripts/fetch-llama.sh` and rebuild, or switch to an external server.
 
-1. Quit GhostType from the menu bar
-2. Drag GhostType from Applications to Trash
-3. Optionally remove settings: delete `~/Library/Preferences/com.ghosttype.app.plist`
-
-## Build from Source
+## Build from source
 
 ```bash
 git clone https://github.com/mk668a/GhostType.git
 cd GhostType
-
-# Build DMG installer
-./scripts/create-dmg.sh
-
-# Or install directly
-./scripts/install.sh
-
-# Or open in Xcode
 open GhostType.xcodeproj
 ```
 
-Requires Xcode Command Line Tools (`xcode-select --install`).
+The build fetches the pinned llama.cpp release binaries on its first run and stages them into the app bundle, so there is no separate setup step. To fetch them by hand, or to build for Intel:
+
+```bash
+./scripts/fetch-llama.sh                 # host architecture
+LLAMA_ARCH=x64 ./scripts/fetch-llama.sh  # Intel
+GHOSTTYPE_SKIP_LLAMA=1 xcodebuild ...    # skip, external backend only
+```
+
+Other scripts:
+
+```bash
+./scripts/create-dmg.sh   # build the DMG installer
+./scripts/install.sh      # build and install into /Applications
+```
+
+Requires Xcode and the Command Line Tools (`xcode-select --install`).
 
 ## Architecture
 
 ```
 GhostType/
 ├── App/
-│   ├── GhostTypeApp.swift          # App entry point & settings
-│   ├── AppDelegate.swift           # Menu bar, lifecycle, completion flow
-│   ├── SettingsView.swift          # Preferences UI
-│   └── WelcomeView.swift           # First-launch setup guide
+│   ├── GhostTypeApp.swift          # Entry point, AppSettings, backend enum
+│   ├── AppDelegate.swift           # Menu bar, lifecycle, server teardown
+│   ├── SettingsView.swift          # Preferences and setup guide
+│   └── MenuBarView.swift           # Status menu
 ├── Core/
-│   ├── AccessibilityManager.swift  # AX API text read/write, permissions
-│   ├── EventTapManager.swift       # NSEvent global/local keystroke monitoring
-│   └── CompletionEngine.swift      # LLM completion orchestration
+│   ├── AccessibilityManager.swift  # AX text read/write, permissions
+│   ├── GlobalKeyMonitor.swift      # CGEventTap keystroke monitoring
+│   ├── InputSourceMonitor.swift    # IME state, pauses auto-trigger
+│   ├── CompletionController.swift  # Debounce, ghost text lifecycle
+│   └── CompletionEngine.swift      # Backend selection, circuit breaker
 ├── LLM/
-│   └── LLMProvider.swift           # OpenAI-compatible API client
+│   ├── LLMProvider.swift           # HTTP client, /infill and chat paths
+│   ├── BundledLlamaServer.swift    # Supervises the bundled llama-server
+│   ├── ModelCatalog.swift          # Downloadable models, on-disk layout
+│   ├── ModelDownloader.swift       # Resumable downloads with progress
+│   └── CompletionGrammar.swift     # GBNF construction
 └── UI/
     ├── OverlayWindow.swift         # Ghost text overlay window
     └── CompletionPopup.swift       # Multi-suggestion popup
 ```
 
+## Credits
+
+Inference runs on [llama.cpp](https://github.com/ggml-org/llama.cpp) (MIT). Bundled models are the [ggml-org](https://huggingface.co/ggml-org) GGUF conversions of [Qwen2.5-Coder](https://github.com/QwenLM/Qwen2.5-Coder) (Apache-2.0).
+
 ## License
 
-[PolyForm Noncommercial License 1.0.0](LICENSE).
-
-GhostType is **source-available** software, not Open Source by the OSI definition. Personal, educational, research, and noncommercial-organization use is permitted free of charge. **Commercial use is not permitted** under this license — please contact the maintainers if you need a commercial license.
+[MIT](LICENSE). Use it, fork it, ship it commercially. No strings attached.
 
 ---
 
-**GhostType** -- *Type less. Think more.*
+**GhostType** *Type less. Think more.*
