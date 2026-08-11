@@ -50,14 +50,42 @@ if [ ! -d "$APP_PATH" ]; then
 fi
 echo "  Build succeeded."
 
-# Sign the app before it goes into the DMG. Xcode already signed the nested
-# llama.cpp binaries during the build phase; this seals the bundle around them.
+# Re-sign everything with the Developer ID, inside out.
+#
+# The hardened runtime deliberately lives here and not in the Xcode project.
+# It turns on library validation, which admits only libraries whose Team ID
+# matches the process. An ad-hoc signature carries no Team ID, so an ad-hoc
+# app cannot load its own ad-hoc Sparkle or llama.cpp binaries and dies at
+# launch. Applying the runtime only alongside a real Developer ID, which
+# stamps one team across every nested binary, keeps local builds runnable and
+# still satisfies notarization.
+#
+# Deepest-first ordering matters: each container is sealed over its contents,
+# so re-signing a framework after its XPC services would invalidate the seal.
 if [ -n "$SIGN_IDENTITY" ]; then
     echo "  Signing app with: ${SIGN_IDENTITY}"
+
+    sign_one() {
+        codesign --force --options runtime --timestamp --sign "$SIGN_IDENTITY" "$1"
+    }
+
+    # Mach-O files first (Sparkle's Autoupdate, the XPC binaries, llama dylibs).
+    while IFS= read -r -d '' item; do
+        sign_one "$item"
+    done < <(find "$APP_PATH/Contents" -depth -type f \
+        \( -name '*.dylib' -o -perm -u+x \) ! -name 'GhostType' -print0)
+
+    # Then the bundles that contain them.
+    while IFS= read -r -d '' item; do
+        sign_one "$item"
+    done < <(find "$APP_PATH/Contents" -depth \
+        \( -name '*.xpc' -o -name '*.app' -o -name '*.framework' \) -print0)
+
     codesign --force --options runtime --timestamp \
         --entitlements "${PROJECT_DIR}/${APP_NAME}/${APP_NAME}.entitlements" \
         --sign "$SIGN_IDENTITY" "$APP_PATH"
-    codesign --verify --strict --verbose=2 "$APP_PATH"
+
+    codesign --verify --deep --strict --verbose=2 "$APP_PATH"
 else
     echo "  GHOSTTYPE_SIGN_IDENTITY unset: shipping an unsigned app."
     echo "  Users will see the 'unidentified developer' warning on first launch."
