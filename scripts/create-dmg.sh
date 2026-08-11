@@ -50,23 +50,23 @@ if [ ! -d "$APP_PATH" ]; then
 fi
 echo "  Build succeeded."
 
-# Re-sign everything with the Developer ID, inside out.
-#
-# The hardened runtime deliberately lives here and not in the Xcode project.
-# It turns on library validation, which admits only libraries whose Team ID
-# matches the process. An ad-hoc signature carries no Team ID, so an ad-hoc
-# app cannot load its own ad-hoc Sparkle or llama.cpp binaries and dies at
-# launch. Applying the runtime only alongside a real Developer ID, which
-# stamps one team across every nested binary, keeps local builds runnable and
-# still satisfies notarization.
+# Re-sign everything with the chosen identity, inside out.
 #
 # Deepest-first ordering matters: each container is sealed over its contents,
 # so re-signing a framework after its XPC services would invalidate the seal.
 if [ -n "$SIGN_IDENTITY" ]; then
     echo "  Signing app with: ${SIGN_IDENTITY}"
 
+    # See scripts/embed-llama.sh for why the hardened runtime is opt-in: it
+    # requires a Team ID that only a real Developer ID provides, and applying it
+    # with a self-signed or ad-hoc identity produces an app that cannot launch.
+    SIGN_FLAGS=(--force --sign "$SIGN_IDENTITY")
+    if [ "${GHOSTTYPE_HARDENED_RUNTIME:-0}" = "1" ]; then
+        SIGN_FLAGS=(--force --options runtime --timestamp --sign "$SIGN_IDENTITY")
+    fi
+
     sign_one() {
-        codesign --force --options runtime --timestamp --sign "$SIGN_IDENTITY" "$1"
+        codesign "${SIGN_FLAGS[@]}" "$1"
     }
 
     # Mach-O files first (Sparkle's Autoupdate, the XPC binaries, llama dylibs).
@@ -81,9 +81,9 @@ if [ -n "$SIGN_IDENTITY" ]; then
     done < <(find "$APP_PATH/Contents" -depth \
         \( -name '*.xpc' -o -name '*.app' -o -name '*.framework' \) -print0)
 
-    codesign --force --options runtime --timestamp \
+    codesign "${SIGN_FLAGS[@]}" \
         --entitlements "${PROJECT_DIR}/${APP_NAME}/${APP_NAME}.entitlements" \
-        --sign "$SIGN_IDENTITY" "$APP_PATH"
+        "$APP_PATH"
 
     codesign --verify --deep --strict --verbose=2 "$APP_PATH"
 else
@@ -131,7 +131,7 @@ rm -f "$TEMP_DMG"
 # this step would break every auto-update, not just the first install.
 if [ -n "$SIGN_IDENTITY" ]; then
     echo "  Signing DMG..."
-    codesign --force --timestamp --sign "$SIGN_IDENTITY" "${OUTPUT_DIR}/${DMG_NAME}"
+    codesign --force --sign "$SIGN_IDENTITY" "${OUTPUT_DIR}/${DMG_NAME}"
 fi
 
 if [ -n "$NOTARY_PROFILE" ]; then

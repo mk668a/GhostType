@@ -105,8 +105,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             inputSource: InputSourceMonitor.shared
         )
 
+        // Both grants are reported at launch because the two failure modes look
+        // identical from the outside: an app that types nothing. System Settings
+        // showing a switch as on is not evidence the grant applies to this
+        // build, so the only trustworthy answer comes from asking the APIs.
+        //
+        // NSLog rather than print: a menu-bar app is launched from Finder, where
+        // stdout goes nowhere. Only the unified log is readable after the fact,
+        // and reading it must not require relaunching from a terminal, which
+        // changes the answer (TCC then evaluates the terminal's grants).
+        NSLog("[GhostType] Accessibility=%@ InputMonitoring=%@",
+              String(describing: AccessibilityManager.shared.checkAccessibility()),
+              String(describing: AccessibilityManager.shared.checkInputMonitoring()))
+
         if !keyMonitor.start() {
-            print("[GhostType] Failed to start event tap. The user likely needs to grant Accessibility permission.")
+            NSLog("[GhostType] Failed to start event tap. The user likely needs to grant Accessibility permission.")
         }
     }
 

@@ -54,15 +54,19 @@ install_name_tool -rpath @loader_path @executable_path/../Frameworks "$MACOS_DIR
 # to load its sibling dylibs through `@rpath` (its rpath is `@loader_path`).
 #
 # The hardened runtime turns on library validation, which only admits libraries
-# whose Team ID matches the process. An ad-hoc signature has no Team ID, so two
-# ad-hoc binaries never match each other and llama-server fails at launch with
-# "different Team IDs". A real Developer ID stamps the same team on all of them,
-# so the runtime is safe there and required for notarization.
+# whose Team ID matches the process. Neither an ad-hoc signature nor a
+# self-signed certificate carries a Team ID, so under the runtime the app cannot
+# load its own bundled Sparkle or llama.cpp binaries and dies in dyld. Only a
+# real Developer ID stamps one team across every nested binary.
+#
+# So the runtime is opt-in and off by default, rather than inferred from whether
+# an identity is present: "has an identity" and "has a Team ID" are different
+# questions, and guessing wrong produces an app that builds, verifies, and then
+# refuses to launch.
 IDENTITY="${EXPANDED_CODE_SIGN_IDENTITY:--}"
 
-if [[ "$IDENTITY" == "-" ]]; then
-    SIGN_ARGS=(--force --sign -)
-else
+SIGN_ARGS=(--force --sign "$IDENTITY")
+if [[ "${GHOSTTYPE_HARDENED_RUNTIME:-0}" == "1" ]]; then
     SIGN_ARGS=(--force --options runtime --timestamp --sign "$IDENTITY")
 fi
 
