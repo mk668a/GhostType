@@ -175,8 +175,25 @@ Every completion is generated on your Mac. The built-in backend talks to a `llam
 
 ## Troubleshooting
 
+**The switch is on in System Settings, but GhostType says the permission is missing.**
+This one hits everyone who updated from 0.3.1 or earlier. macOS ties each Accessibility grant to the code signature of the app that received it, and every release up to 0.3.1 was signed with a hash of the build itself, which changed every version. 1.0.0 uses a stable certificate instead, so it stops here, but your Mac still has the old rule stored. Toggling the switch updates the permission without rewriting the rule attached to it, so the app keeps being denied while the switch reads as on.
+
+Turning the switch off and on will not clear it, and neither will removing GhostType from the list with the minus button. The stored entry has to be deleted:
+
+```bash
+sudo tccutil reset Accessibility com.ghosttype.app
+sudo tccutil reset ListenEvent com.ghosttype.app
+sudo killall tccd
+```
+
+Then relaunch GhostType and approve it when it asks. Once is enough. To confirm which case you are in, look for `Failed to match existing code requirement` here:
+
+```bash
+log show --last 5m --predicate 'process == "tccd"' | grep -i ghosttype
+```
+
 **Completions do not appear in other apps.**
-Check the menu bar status. If it says "Grant Accessibility" or "Grant Input Monitoring", open the matching pane in System Settings and toggle GhostType on. It restarts itself within a few seconds. Building from source changes the code signature, so macOS asks for Accessibility again after each build.
+Check the menu bar status. If it says "Grant Accessibility" or "Grant Input Monitoring", open the matching pane in System Settings and toggle GhostType on. It restarts itself within a few seconds. Building from source re-signs the app, and if you build without a signing identity the signature changes every time, so macOS asks for Accessibility again after each build. Run `scripts/make-signing-cert.sh` once and build with `GHOSTTYPE_SIGN_IDENTITY` set to keep the permission across rebuilds.
 
 **They work in the Settings test field but nowhere else.**
 That is Accessibility permission specifically. The test field is inside GhostType, so it needs no system permission.

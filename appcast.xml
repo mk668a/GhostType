@@ -12,6 +12,27 @@
             <sparkle:shortVersionString>1.0.0</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
             <pubDate>Tue, 11 Aug 2026 23:38:46 +0900</pubDate>
+            <description><![CDATA[
+                <h2>Read this first: you have to reset the permission once</h2>
+                <p>macOS ties your Accessibility grant to the app's code signature. Every release up to 0.3.1 was signed with a hash of the build itself, so it changed with every version. <strong>1.0.0 uses a stable certificate, so this stops here</strong>, but your Mac still has the old rule stored, and after this update GhostType will be denied while System Settings still shows the switch as on.</p>
+                <p>Toggling the switch will not fix it. Removing GhostType from the list will not fix it. Run this in Terminal, then relaunch GhostType and approve it when asked:</p>
+                <pre>sudo tccutil reset Accessibility com.ghosttype.app
+sudo tccutil reset ListenEvent com.ghosttype.app
+sudo killall tccd</pre>
+                <p>Once is enough.</p>
+                <h2>What's new</h2>
+                <p><strong>GhostType now runs on its own.</strong> It ships with llama.cpp and downloads a model on first run, so it no longer needs LM Studio or Ollama. If you already run a server, it still points at that instead.</p>
+                <ul>
+                    <li>Bundled llama.cpp backend, with a model catalogue from 0.5 GB to 2.7 GB</li>
+                    <li>Real fill-in-the-middle: the text after your cursor is used, so suggestions join what you already typed</li>
+                    <li>Grammar-constrained generation, so a one-line suggestion stays one line</li>
+                    <li>Learns from the completions you accept, locally</li>
+                    <li>Stays quiet in password fields, credential apps, and sign-in pages</li>
+                    <li>Tab accepts one word at a time, and works in Japanese and Chinese</li>
+                    <li>Relicensed to MIT</li>
+                </ul>
+                <p><a href="https://github.com/mk668a/GhostType/releases/tag/v1.0.0">Full release notes</a></p>
+            ]]></description>
             <enclosure
                 url="https://github.com/mk668a/GhostType/releases/download/v1.0.0/GhostType-1.0.0.dmg"
                 sparkle:edSignature="YH13xDjOPYSzqZZS41tevAdd8LIuk3XvSFUvSFrrdxXQj8JB7N3Kr9tltNJ9m7yl4C1cEaCf4Cm7yctQ6/gdCg=="
