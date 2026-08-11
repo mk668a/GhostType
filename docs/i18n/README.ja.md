@@ -2,7 +2,7 @@
   <img src="../../images/header.png" alt="GhostType" width="600">
 </p>
 
-[English](../../README.md) · 日本語
+[English](../../README.md) · 日本語 · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Português](README.pt-BR.md)
 
 # GhostType
 
@@ -39,7 +39,7 @@ After:   Thanks for sending over the draft. I read through it this morning and I
                     └─ grey ghost text, Tab to accept, Esc to dismiss
 ```
 
-これは同梱の0.5Bモデルが実際に返した補完です。Safari、メモ、メール、Slack、その他どのテキスト欄でも同じように動きます。
+これは同梱モデルが実際に返した補完です。Safari、メモ、メール、Slack、その他どのテキスト欄でも同じように動きます。
 
 <p align="center">
   <img src="../../images/usecase1.png" alt="GhostType in Gmail" width="600">
@@ -92,13 +92,15 @@ GhostType自身が後から適用するアップデートでは、この手順�
 
 初回起動時にセットアップガイドが開きます。**内蔵**を選んでモデルをダウンロードするか、**外部サーバー**を選んでエンドポイントを入力します。
 
-内蔵モデル:
+内蔵モデル。文章用にはチャット向けの指示調整版ではなくベースモデルを採用しています。チャットモデルに文の続きを頼むと、続きを書かずに返事をしてしまうためです。
 
-| モデル | サイズ | 備考 |
-|--------|--------|------|
-| Qwen2.5-Coder 0.5B | 約0.5GB | 最速。メモリ8GBのMacでも快適。 |
-| Qwen2.5-Coder 1.5B | 約1.6GB | 推奨。速度と品質のバランスが最良。 |
-| Qwen2.5-Coder 3B | 約3.1GB | 品質重視。メモリ16GB以上向け。 |
+| モデル | サイズ | 用途 | 備考 |
+|--------|--------|------|------|
+| Qwen3.5 0.8B Base | 約0.6GB | 文章 | 最速。メモリ8GBのMacでも快適。 |
+| Qwen3.5 2B Base | 約1.3GB | 文章 | 推奨。速度と品質のバランスが最良。 |
+| Qwen3.5 4B Base | 約2.7GB | 文章 | 品質重視。メモリ16GB以上向け。 |
+| Qwen2.5-Coder 0.5B | 約0.5GB | コード | 軽量。コードや技術文書向け。 |
+| Qwen2.5-Coder 1.5B | 約1.6GB | コード | コードに強く、日常の文章には弱い。 |
 
 モデルは`~/Library/Application Support/GhostType/models`に保存され、Macの外に出ることはありません。
 
@@ -257,7 +259,7 @@ GhostType/
 
 ## クレジット
 
-推論は[llama.cpp](https://github.com/ggml-org/llama.cpp)(MIT)で動いています。同梱モデルは[Qwen2.5-Coder](https://github.com/QwenLM/Qwen2.5-Coder)(Apache-2.0)を[ggml-org](https://huggingface.co/ggml-org)がGGUFに変換したものです。
+推論は[llama.cpp](https://github.com/ggml-org/llama.cpp)(MIT)で動いています。文章用モデルは[mradermacher](https://huggingface.co/mradermacher)がQwen3.5 BaseをGGUFに変換したもの、コード用モデルは[ggml-org](https://huggingface.co/ggml-org)が[Qwen2.5-Coder](https://github.com/QwenLM/Qwen2.5-Coder)を変換したものです。どちらのモデルもApache-2.0です。
 
 ## ライセンス
 

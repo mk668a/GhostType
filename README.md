@@ -2,7 +2,7 @@
   <img src="images/header.png" alt="GhostType" width="600">
 </p>
 
-English · [日本語](docs/i18n/README.ja.md)
+English · [日本語](docs/i18n/README.ja.md) · [简体中文](docs/i18n/README.zh-CN.md) · [繁體中文](docs/i18n/README.zh-TW.md) · [한국어](docs/i18n/README.ko.md) · [Español](docs/i18n/README.es.md) · [Français](docs/i18n/README.fr.md) · [Deutsch](docs/i18n/README.de.md) · [Português](docs/i18n/README.pt-BR.md)
 
 # GhostType
 
@@ -39,7 +39,7 @@ After:   Thanks for sending over the draft. I read through it this morning and I
                     └─ grey ghost text, Tab to accept, Esc to dismiss
 ```
 
-That is a real completion from the bundled 0.5B model. It works the same way in Safari, Notes, Mail, Slack, and any other macOS text field.
+That is a real completion from a bundled model. It works the same way in Safari, Notes, Mail, Slack, and any other macOS text field.
 
 <p align="center">
   <img src="images/usecase1.png" alt="GhostType in Gmail" width="600">
@@ -92,13 +92,15 @@ To skip the whole thing, [build it yourself](#build-from-source). An app you com
 
 The setup guide opens on first launch. Pick **Built-in** and download a model, or pick **External server** and enter its endpoint.
 
-Built-in models:
+Built-in models. The prose models are base models rather than instruction-tuned chat models, because a chat model asked to finish a sentence tends to answer it instead:
 
-| Model | Size | Notes |
-|-------|------|-------|
-| Qwen2.5-Coder 0.5B | ~0.5 GB | Fastest. Fine on 8 GB Macs. |
-| Qwen2.5-Coder 1.5B | ~1.6 GB | Recommended. Best latency-to-quality balance. |
-| Qwen2.5-Coder 3B | ~3.1 GB | Highest quality. Wants 16 GB or more. |
+| Model | Size | For | Notes |
+|-------|------|-----|-------|
+| Qwen3.5 0.8B Base | ~0.6 GB | Prose | Fastest. Fine on 8 GB Macs. |
+| Qwen3.5 2B Base | ~1.3 GB | Prose | Recommended. Best latency-to-quality balance. |
+| Qwen3.5 4B Base | ~2.7 GB | Prose | Highest quality. Wants 16 GB or more. |
+| Qwen2.5-Coder 0.5B | ~0.5 GB | Code | Lightweight, for code and technical writing. |
+| Qwen2.5-Coder 1.5B | ~1.6 GB | Code | Stronger on code, weaker on everyday prose. |
 
 Models download to `~/Library/Application Support/GhostType/models` and never leave your Mac.
 
@@ -257,7 +259,7 @@ GhostType/
 
 ## Credits
 
-Inference runs on [llama.cpp](https://github.com/ggml-org/llama.cpp) (MIT). Bundled models are the [ggml-org](https://huggingface.co/ggml-org) GGUF conversions of [Qwen2.5-Coder](https://github.com/QwenLM/Qwen2.5-Coder) (Apache-2.0).
+Inference runs on [llama.cpp](https://github.com/ggml-org/llama.cpp) (MIT). The prose models are [mradermacher](https://huggingface.co/mradermacher) GGUF conversions of Qwen3.5 Base, and the code models are the [ggml-org](https://huggingface.co/ggml-org) conversions of [Qwen2.5-Coder](https://github.com/QwenLM/Qwen2.5-Coder). Both model families are Apache-2.0.
 
 ## License
 
